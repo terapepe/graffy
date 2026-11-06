@@ -28,7 +28,7 @@ window.GRAFFY_CONFIG = {
    * Leave "" until deployed — UI will show "TBA".
    */
   token: {
-    address: "0x5eE3b32f5D229626ec1A7755fDEe5137ae3336ea",
+    address: "",
   },
 
   /** Smart contracts (fill in after deployment). */
