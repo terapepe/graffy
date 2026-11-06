@@ -23,6 +23,9 @@
    "wallet": "0x96a11b9c1b08e2fa123f3fbaaea485279f5491ae",
    "image": "assets/seed/art-01.svg",
    "validVotes": 11,
+   "description": "A shout painted in total silence: a faceless crowd dissolving into the brick, mouths replaced by bursts of yellow.",
+   "artistBio": "Self-taught writer from the river district. Paints letters first, questions later.",
+   "medium": "Spray paint on brick (digital capture)",
    "reachedAt": "2026-11-06T09:11:04.307860+07:00",
    "createdAt": "2026-11-02T09:18:41.808225+07:00"
   },
@@ -33,6 +36,9 @@
    "wallet": "0x513d4f741a16a858e11f17d70423aba373ce47bc",
    "image": "assets/seed/art-02.svg",
    "validVotes": 2,
+   "description": "Inspired by the flicker of broken neon on a night shift \u2014 pink static colliding with cyan wires across the wall.",
+   "artistBio": "Muralist and illustrator obsessed with neon light and night-time cities.",
+   "medium": "Spray paint on brick (digital capture)",
    "reachedAt": "2026-11-02T22:50:01.144901+07:00",
    "createdAt": "2026-11-02T11:55:04.113114+07:00"
   },
@@ -43,6 +49,9 @@
    "wallet": "0x1bd069c01f7db59ed06038b0b4e6e5d318c93134",
    "image": "assets/seed/art-03.svg",
    "validVotes": 6,
+   "description": "Flowers forcing their way through concrete cracks. Painted over three nights on an abandoned parking garage.",
+   "artistBio": "Paints big, paints fast. Known for heavy drips and loud palettes.",
+   "medium": "Spray paint on brick (digital capture)",
    "reachedAt": "2026-11-04T18:31:07.373462+07:00",
    "createdAt": "2026-11-02T19:38:09.306801+07:00"
   },
@@ -53,6 +62,9 @@
    "wallet": "0x3c5d9410c0996d5e1a600b095cc416f503812e70",
    "image": "assets/seed/art-04.svg",
    "validVotes": 22,
+   "description": "No sketch, no plan: twelve cans and pure instinct. A celebration of colour clashing on purpose.",
+   "artistBio": "Former graphic designer who traded the screen for the wall.",
+   "medium": "Spray paint on brick (digital capture)",
    "reachedAt": "2026-11-06T14:57:56.429393+07:00",
    "createdAt": "2026-11-02T13:22:15.140175+07:00"
   },
@@ -63,6 +75,9 @@
    "wallet": "0x2dc91d11d929b7787b58b0804b486d6d96c9b876",
    "image": "assets/seed/art-05.svg",
    "validVotes": 25,
+   "description": "Organic shapes blooming out of grey slabs \u2014 a reminder that cities are living things.",
+   "artistBio": "Old-school letter style with a modern colour sense.",
+   "medium": "Spray paint on brick (digital capture)",
    "reachedAt": "2026-11-06T11:45:39.274205+07:00",
    "createdAt": "2026-11-02T15:36:43.213151+07:00"
   },
@@ -73,6 +88,9 @@
    "wallet": "0xede9188ef41a17cb04b7e60398687bfb8e142ea4",
    "image": "assets/seed/art-06.svg",
    "validVotes": 2,
+   "description": "A tag that grew into a full piece. Every layer is a different night on the same wall.",
+   "artistBio": "Youngest crew member, specialises in characters and quick throw-ups.",
+   "medium": "Spray paint on brick (digital capture)",
    "reachedAt": "2026-11-06T03:34:49.191167+07:00",
    "createdAt": "2026-11-03T02:52:31.749277+07:00"
   },
@@ -83,6 +101,9 @@
    "wallet": "0xe50c6c0976f7c3570c01343cd7233d56de21c2d5",
    "image": "assets/seed/art-07.svg",
    "validVotes": 2,
+   "description": "Rusted shutters reimagined as treasure. Oxidised orange turned into gold leaf with spray and stencil.",
+   "artistBio": "Works with found surfaces \u2014 shutters, doors, rusted metal.",
+   "medium": "Spray paint on brick (digital capture)",
    "reachedAt": "2026-11-05T03:03:15.518930+07:00",
    "createdAt": "2026-11-03T02:47:03.036624+07:00"
   },
@@ -93,6 +114,9 @@
    "wallet": "0x99f2c2ff4346b63a1790a1ffad87231db61c70b6",
    "image": "assets/seed/art-08.svg",
    "validVotes": 1,
+   "description": "A street preacher made of overlapping tags, preaching to whoever walks the alley after midnight.",
+   "artistBio": "Paints figures that look like street legends from another time.",
+   "medium": "Spray paint on brick (digital capture)",
    "reachedAt": "2026-11-05T16:33:50.470787+07:00",
    "createdAt": "2026-11-03T03:40:51.642516+07:00"
   },
@@ -103,6 +127,9 @@
    "wallet": "0xbf650a8aa99ccc62fb51c170a7f02c62d5379a10",
    "image": "assets/seed/art-09.svg",
    "validVotes": 1,
+   "description": "A halo made of drips. Street art as devotion \u2014 the saint holds a spray can instead of a candle.",
+   "artistBio": "Mixes religious iconography with graffiti culture.",
+   "medium": "Spray paint on brick (digital capture)",
    "reachedAt": "2026-11-03T04:02:20.716010+07:00",
    "createdAt": "2026-11-02T21:58:46.642061+07:00"
   },
@@ -113,6 +140,9 @@
    "wallet": "0xe9b4701d512d7611099ef4584365491c245a6bc9",
    "image": "assets/seed/art-10.svg",
    "validVotes": 15,
+   "description": "Smog-filled lungs drawn as crumpled newspaper. A comment on breathing in a city that never stops.",
+   "artistBio": "Visual artist focused on environment and city life.",
+   "medium": "Spray paint on brick (digital capture)",
    "reachedAt": "2026-11-06T07:26:49.669281+07:00",
    "createdAt": "2026-11-03T00:33:09.222219+07:00"
   },
@@ -123,6 +153,9 @@
    "wallet": "0x752d93fe23e7f29f238194dc397bc4a4b8cc159c",
    "image": "assets/seed/art-11.svg",
    "validVotes": 32,
+   "description": "Hand-drawn signal flares calling other writers to the wall. Bright, loud and impossible to ignore.",
+   "artistBio": "Bright colour blocks and bold lines. Paints for the people walking by.",
+   "medium": "Spray paint on brick (digital capture)",
    "reachedAt": "2026-11-06T09:58:15.086689+07:00",
    "createdAt": "2026-11-02T15:41:59.413215+07:00"
   },
@@ -133,6 +166,9 @@
    "wallet": "0xbf2cf24d0aa0ff1b3382339e787b6a9190be2fad",
    "image": "assets/seed/art-12.svg",
    "validVotes": 7,
+   "description": "A whole kingdom built from paint drips \u2014 towers, bridges and gates that only exist because the paint ran.",
+   "artistBio": "Drip specialist. Lets gravity finish every piece.",
+   "medium": "Spray paint on brick (digital capture)",
    "reachedAt": "2026-11-05T20:31:22.243375+07:00",
    "createdAt": "2026-11-03T05:14:59.403028+07:00"
   },
@@ -143,6 +179,9 @@
    "wallet": "0x99b7e3d12506e924a5cf098c81a1e85cc4116457",
    "image": "assets/seed/art-13.svg",
    "validVotes": 3,
+   "description": "A story told across five subway panels: the commute, the crowd, the escape, the tunnel, the light.",
+   "artistBio": "Storyteller who paints in sequences, like comic panels on concrete.",
+   "medium": "Spray paint on brick (digital capture)",
    "reachedAt": "2026-11-04T16:42:36.506939+07:00",
    "createdAt": "2026-11-03T00:53:59.406360+07:00"
   },
@@ -153,6 +192,9 @@
    "wallet": "0xc6def50065c37bf5bf14b292a2fb8e25e1919b25",
    "image": "assets/seed/art-14.svg",
    "validVotes": 39,
+   "description": "Loud colours arranged to feel calm. The piece asks you to stop and listen to the street for a moment.",
+   "artistBio": "Minimal palette, maximum impact. Likes quiet walls in loud streets.",
+   "medium": "Spray paint on brick (digital capture)",
    "reachedAt": "2026-11-06T14:52:40.997925+07:00",
    "createdAt": "2026-11-02T17:14:42.441670+07:00"
   },
@@ -163,6 +205,9 @@
    "wallet": "0xa70e9244c827aad06966c5feae03c499a59eb1d0",
    "image": "assets/seed/art-15.svg",
    "validVotes": 4,
+   "description": "Every brick hand-painted with a different heartbeat line. A love letter to the neighbourhood.",
+   "artistBio": "Community muralist who paints neighbourhood portraits.",
+   "medium": "Spray paint on brick (digital capture)",
    "reachedAt": "2026-11-05T09:13:23.210112+07:00",
    "createdAt": "2026-11-02T01:28:55.868035+07:00"
   },
@@ -173,6 +218,9 @@
    "wallet": "0x7a3f7b07743aa7d36bf19c145a1932a3029167b5",
    "image": "assets/seed/art-16.svg",
    "validVotes": 1,
+   "description": "A chrome-letter ghost floating over the overpass \u2014 classic silver style with a haunted twist.",
+   "artistBio": "Chrome and silver piece specialist with a love for classic wildstyle.",
+   "medium": "Spray paint on brick (digital capture)",
    "reachedAt": "2026-11-05T07:27:34.752517+07:00",
    "createdAt": "2026-11-02T06:10:41.352913+07:00"
   },
@@ -183,6 +231,9 @@
    "wallet": "0x9d59bd31c3a3adda45e6b894bfca1d29a6d46eca",
    "image": "assets/seed/art-17.svg",
    "validVotes": 2,
+   "description": "Painted from a rooftop edge at dawn. Energy, chaos and the city skyline all in one frame.",
+   "artistBio": "Paints from heights \u2014 rooftops, water towers, billboards.",
+   "medium": "Spray paint on brick (digital capture)",
    "reachedAt": "2026-11-05T05:22:11.897700+07:00",
    "createdAt": "2026-11-02T13:18:12.779418+07:00"
   },
@@ -193,6 +244,9 @@
    "wallet": "0xfe841a89fc18d3d89fd8829b051800845a937ed6",
    "image": "assets/seed/art-18.svg",
    "validVotes": 20,
+   "description": "Mural meets TV static: a portrait that breaks into noise the closer you look.",
+   "artistBio": "Experimental artist blending glitch art with spray paint.",
+   "medium": "Spray paint on brick (digital capture)",
    "reachedAt": "2026-11-05T23:59:47.726751+07:00",
    "createdAt": "2026-11-02T01:21:14.913512+07:00"
   },
@@ -203,6 +257,9 @@
    "wallet": "0x0e7aa9f43f6748b136152fef94e9fafe59563bea",
    "image": "assets/seed/art-19.svg",
    "validVotes": 3,
+   "description": "Echoes of older pieces buffed from this wall, brought back as faded outlines under fresh colour.",
+   "artistBio": "Paints over buffed walls to bring old pieces back to life.",
+   "medium": "Spray paint on brick (digital capture)",
    "reachedAt": "2026-11-05T04:28:25.806024+07:00",
    "createdAt": "2026-11-02T16:13:08.200333+07:00"
   },
@@ -213,6 +270,9 @@
    "wallet": "0x09ca429c9c21e639ce8fbe24ac1291375d1b7eaf",
    "image": "assets/seed/art-20.svg",
    "validVotes": 2,
+   "description": "The last train leaves, the city goes quiet, and the walls start talking. A tribute to night writers.",
+   "artistBio": "Night writer for over a decade. Trains, tunnels and late hours.",
+   "medium": "Spray paint on brick (digital capture)",
    "reachedAt": "2026-11-03T16:22:31.864615+07:00",
    "createdAt": "2026-11-02T06:36:15.124432+07:00"
   }

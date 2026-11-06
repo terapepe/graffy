@@ -46,7 +46,7 @@
       const reward = r <= 3 && season ? U.share(season.totalPrizePool, SPLIT[r - 1].bps) : null;
       return `<tr class="${r <= 3 ? "top-row-" + r : ""}">
         <td><span class="rank">${r <= 3 ? U.medal(r) : "#" + r}</span></td>
-        <td><div class="art-cell">${a.image ? `<img class="thumb" src="${U.esc(a.image)}" alt="" loading="lazy">` : `<span class="thumb"></span>`}
+        <td><div class="art-cell clickable" data-action="view-art" data-id="${U.esc(a.id)}">${a.image ? `<img class="thumb" src="${U.esc(a.image)}" alt="" loading="lazy">` : `<span class="thumb"></span>`}
           <div><b>${U.esc(a.title)}</b><div class="addr">${U.esc(a.artist || "")} ${a.wallet ? "· " + U.short(a.wallet) : ""}</div></div></div></td>
         <td class="num"><b>${U.fmtInt(a.validVotes)}</b></td>
         <td class="num">${reward ? U.fmtToken(reward, 0) + " " + T : "—"}</td>
@@ -75,11 +75,13 @@
 
   function artCard(a, i) {
     return `<article class="art-card">
-      <div class="img">${a.image ? `<img src="${U.esc(a.image)}" alt="${U.esc(a.title)}" loading="lazy">` : ""}
+      <div class="img clickable" data-action="view-art" data-id="${U.esc(a.id)}">${a.image ? `<img src="${U.esc(a.image)}" alt="${U.esc(a.title)}" loading="lazy">` : ""}
+        <span class="zoom-hint">View</span>
         <span class="rank-tag">#${U.esc(a.rank || i + 1)}</span></div>
       <div class="body">
-        <h4>${U.esc(a.title)}</h4>
+        <h4 class="clickable" data-action="view-art" data-id="${U.esc(a.id)}">${U.esc(a.title)}</h4>
         <div class="addr">${U.esc(a.artist || "")} ${a.wallet ? "· " + U.short(a.wallet) : ""}</div>
+        ${a.description ? `<p class="art-desc">${U.esc(a.description)}</p>` : ""}
         <div class="meta">
           <span class="votes">${U.fmtInt(a.validVotes)} <small>valid votes</small></span>
           <button class="btn btn-primary btn-sm" data-action="vote" data-id="${U.esc(a.id)}">Vote</button>
@@ -161,6 +163,7 @@
     const lb = await API.leaderboard(s.id, 10);
     const leaders = lb.ok ? (lb.data.items || lb.data) : [];
     s._leaders = leaders;
+    App.artworks = leaders;
     U.$("#homePrize").innerHTML = prizeCard(s);
     const accents = ["var(--lime)", "var(--cyan)", "var(--pink)", "var(--orange)", "var(--gold)"];
     U.$("#homeStats").innerHTML = [
@@ -219,6 +222,7 @@
     const s = await App.loadSeason();
     if (!s) { U.$("#lbBody").innerHTML = U.empty("Leaderboard unavailable", "Live rankings load from the season API."); return; }
     const r = await API.leaderboard(s.id, 100);
+    if (r.ok) App.artworks = r.data.items || r.data;
     U.$("#lbBody").innerHTML = `<div class="card" style="margin-bottom:18px"><div class="season-strip">
       <div><b>${U.esc(s.name || "Season #" + s.id)}</b><div class="muted" style="font-size:14px">Prize pool: ${U.fmtToken(s.totalPrizePool, 0)} ${T} · ${U.fmtInt(s.totalValidVotes)} valid votes</div></div>
       ${countdownHTML(s.endDate)}</div></div>` + (r.ok ? leaderTable(r.data.items || r.data, s) : U.empty("Leaderboard unavailable", r.error));
@@ -494,6 +498,37 @@
         <a class="btn btn-ghost btn-sm" href="${Chain.explorerAddr(w.network, w.address)}" target="_blank" rel="noopener">Explorer</a>
         <button class="btn btn-ghost btn-sm" data-action="disconnect" style="margin-left:auto">Disconnect</button>
       </div>`;
+  };
+
+  V.artModal = (a, s) => {
+    const r = Number(a.rank);
+    const reward = r >= 1 && r <= 3 && s ? U.share(s.totalPrizePool, SPLIT[r - 1].bps) : null;
+    const xh = a.artistX ? a.artistX.replace(/^@/, "") : "";
+    return `<div class="art-modal">
+      <div class="art-big">${a.image ? `<a href="${U.esc(a.image)}" target="_blank" rel="noopener" title="Open full size"><img src="${U.esc(a.image)}" alt="${U.esc(a.title)}"></a>` : ""}</div>
+      <div class="art-info">
+        <span class="kicker">${r <= 3 ? U.medal(r).replace('class="medal"', 'class="medal" width="26" height="26" style="vertical-align:middle"') : ""} Rank #${U.esc(a.rank || "—")}</span>
+        <h3 id="modalTitle" style="margin-top:6px">${U.esc(a.title)}</h3>
+        ${a.description ? `<p class="art-text">${U.esc(a.description)}</p>` : ""}
+        <div class="param-list">
+          <div class="param"><span class="k">Valid votes</span><span class="v">${U.fmtInt(a.validVotes)}</span></div>
+          ${reward ? `<div class="param"><span class="k">Projected reward</span><span class="v">${U.fmtToken(reward, 0)} ${T}<small>${U.usd(reward, s?.usdPrice)}</small></span></div>` : ""}
+          ${a.medium ? `<div class="param"><span class="k">Medium</span><span class="v" style="font-family:var(--body);font-weight:500">${U.esc(a.medium)}</span></div>` : ""}
+          <div class="param"><span class="k">Submitted</span><span class="v" style="font-family:var(--body);font-weight:500">${U.fmtDate(a.createdAt)}</span></div>
+        </div>
+        <div class="artist-card">
+          <div class="avatar">${U.esc((a.artist || "?").trim().charAt(0).toUpperCase())}</div>
+          <div style="min-width:0">
+            <div class="muted" style="font-size:11px;text-transform:uppercase;letter-spacing:1.5px">Artist</div>
+            <b>${U.esc(a.artist || "Unknown")}</b>
+            ${xh ? `<a class="addr" href="https://x.com/${encodeURIComponent(xh)}" target="_blank" rel="noopener" style="display:block">@${U.esc(xh)} ↗</a>` : ""}
+            ${a.artistBio ? `<p class="art-text" style="margin:6px 0 0;font-size:13px">${U.esc(a.artistBio)}</p>` : ""}
+            ${a.wallet ? `<div class="addr" style="margin-top:6px">${U.short(a.wallet, 8, 6)} <button class="link-btn" data-action="copy" data-text="${U.esc(a.wallet)}">copy</button></div>` : ""}
+          </div>
+        </div>
+        <button class="btn btn-primary btn-block" style="margin-top:16px" data-action="vote" data-id="${U.esc(a.id)}">Vote for this artwork</button>
+      </div>
+    </div>`;
   };
 
   V.voteModal = (a, s) => {

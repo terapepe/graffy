@@ -47,8 +47,9 @@
       });
     },
 
-    openModal(html) {
+    openModal(html, wide) {
       U.$("#modalBody").innerHTML = html;
+      U.$(".modal-card").classList.toggle("wide", !!wide);
       U.$("#modal").hidden = false;
       document.body.style.overflow = "hidden";
     },
@@ -95,6 +96,11 @@
             Wallet.set({ network: el.dataset.net });
             this.closeModal();
           } catch (e) { U.toast(e.message || "Switch rejected"); }
+          return;
+        }
+        case "view-art": {
+          const a = this.artworks.find((x) => String(x.id) === el.dataset.id);
+          if (a) this.openModal(Views.artModal(a, this.season), true);
           return;
         }
         case "vote": {
