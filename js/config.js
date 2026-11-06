@@ -130,6 +130,10 @@ window.GRAFFY_CONFIG = {
    * empty states — no placeholder/demo data is ever rendered.
    */
   api: {
+    // "seed" = local TEST data (data/seed.json + admin seasons saved in this browser)
+    // "live" = real backend at baseUrl. Switch to "live" once the PHP API is up.
+    mode: "seed",
+    seedUrl: "data/seed.json",
     baseUrl: "/api",
     endpoints: {
       currentSeason: "/season/current",
@@ -145,5 +149,5 @@ window.GRAFFY_CONFIG = {
   },
 
   /** Wallets allowed to see the Admin form (backend must re-verify). */
-  adminWallets: [],
+  adminWallets: ["0xB3c29d9D0e45d9988ad04527580aD03c52671364"],
 };

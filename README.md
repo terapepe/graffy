@@ -30,6 +30,13 @@ Season parameters (Minimum Holding to Submit, Upload Fee, Minimum Holding to Vot
 
 Network icons are in `assets/networks/*.svg` — replace with official brand-kit SVGs (same filenames) if desired.
 
+## Test mode (`api.mode: "seed"`)
+
+Until the backend is live, the site runs on test data:
+- `data/seed.json` — Season 1 "Concrete Canvas" (Nov 2 → Nov 8, 2026, UTC+7), 20 artworks (`assets/seed/*.svg`), 200 vote records. Totals, prize pool, ranking and tie-breaks are all computed from the vote records.
+- Admin wallet (`adminWallets`) can create new seasons from `#/admin` after signing a message. In test mode they are stored in that browser's localStorage only. A new season must start after the running one ends (parameters of a live season are locked).
+- A "TEST SEASON" banner is shown. Set `api.mode: "live"` to switch to the real API.
+
 ## Data rules
 
 The UI never renders demo data. Everything comes from the API or on-chain reads (token supply/balance via JSON-RPC). When the API is unreachable, empty states and a "Backend not connected" banner are shown.

@@ -417,9 +417,10 @@
       const checks = [
         [w.connected, "Wallet connected", w.connected ? U.short(w.address) : "Connect an admin wallet"],
         [Wallet.isAdmin(), "Admin wallet", Wallet.isAdmin() ? "Authorised" : "Not in admin list"],
-        [!live, "No season running", live ? "Current season is live — parameters are locked" : "Next season can be configured"],
       ];
-      U.$("#admChecks").innerHTML = checks.map(([ok, t, d]) => `<div class="check ${ok ? "ok" : "bad"}"><span class="ic">${ok ? "✓" : "!"}</span><div><b>${t}</b><div class="muted" style="font-size:12px">${U.esc(d)}</div></div></div>`).join("");
+      U.$("#admChecks").dataset.note = live ? `"${s.name}" is live until ${U.fmtDate(s.endDate)} — its parameters are locked. A new season must start after it ends.` : "";
+      U.$("#admChecks").innerHTML = checks.map(([ok, t, d]) => `<div class="check ${ok ? "ok" : "bad"}"><span class="ic">${ok ? "✓" : "!"}</span><div><b>${t}</b><div class="muted" style="font-size:12px">${U.esc(d)}</div></div></div>`).join("")
+        + (U.$("#admChecks").dataset.note ? `<div class="notice">🔒 ${U.esc(U.$("#admChecks").dataset.note)}</div>` : "");
       U.$("#admBtn").disabled = !checks.every((c) => c[0]);
     };
     render();
@@ -430,11 +431,13 @@
       if (new Date(payload.endDate) <= new Date(payload.startDate)) { U.$("#admMsg").innerHTML = `<div class="notice err">End Date must be after Start Date.</div>`; return; }
       payload.startDate = new Date(payload.startDate).toISOString();
       payload.endDate = new Date(payload.endDate).toISOString();
+      payload.createdBy = Wallet.state.address;
       try {
         const msg = `GRAFFY admin: save season\n${JSON.stringify(payload)}\n${new Date().toISOString()}`;
         const sig = await Wallet.signMessage(msg);
         const r = await API.saveSeason(payload, { "X-Wallet": Wallet.state.address, "X-Signature": sig, "X-Message": btoa(unescape(encodeURIComponent(msg))) });
-        U.$("#admMsg").innerHTML = r.ok ? `<div class="notice">Season saved.</div>` : `<div class="notice err">Save failed: ${U.esc(r.error)}</div>`;
+        if (r.ok) { form.reset(); App.season = undefined; }
+        U.$("#admMsg").innerHTML = r.ok ? `<div class="notice">Season #${U.esc(r.data.id)} saved${API.seedMode ? " (test mode — stored in this browser only)" : ""}. <a href="#/seasons"><u>View seasons</u></a></div>` : `<div class="notice err">Save failed: ${U.esc(r.error)}</div>`;
       } catch (err) { U.$("#admMsg").innerHTML = `<div class="notice err">${U.esc(err.message)}</div>`; }
     });
   };
