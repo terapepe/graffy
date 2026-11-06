@@ -1,14 +1,3 @@
-/**
- * GRAFFY — Frontend configuration
- * ------------------------------------------------------------------
- * Edit this file directly on GitHub to change contract addresses,
- * networks, links and API endpoints. No rebuild needed.
- *
- * NOTE: Season parameters (Minimum Holding, Upload Fee, Voting Fee,
- * USD reference price...) are NOT configured here on purpose.
- * They are set by the Admin per season and served by the backend /
- * smart contract. Never hardcode them in the frontend.
- */
 window.GRAFFY_CONFIG = {
   project: {
     name: "GRAFFY",
@@ -23,12 +12,8 @@ window.GRAFFY_CONFIG = {
     xHandle: "@GraffyCoin",
   },
 
-  /**
-   * $GRAFFY token contract address (CA) on Robinhood Chain.
-   * Leave "" until deployed — UI will show "TBA".
-   */
   token: {
-    address: "0x09d514ab4b1f8ca52469a04a8aca871f7b45600f",
+    address: "",
   },
 
   /** Smart contracts (fill in after deployment). */
