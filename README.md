@@ -2,9 +2,9 @@
 
 Static frontend (HTML/CSS/vanilla JS, no build step) for the GRAFFY street-art voting seasons.
 
-- Main network: **Robinhood Chain** (Chain ID 4663). Secondary: **BSC, Base, Ethereum** (same CA) and **Solana**.
-- Multi-network wallet login: EVM wallets (EIP-6963 / MetaMask, Rabby…) with auto network switch/add, Solana wallets (Phantom, Solflare, Backpack).
-- "Buy $GRAFFY" popup → Uniswap per network.
+- Network: **Robinhood Chain** only (Chain ID 4663).
+- Wallet login: EVM wallets (EIP-6963 / MetaMask, Rabby…), Robinhood Chain is added/switched automatically.
+- "Buy $GRAFFY" popup → Uniswap on Robinhood Chain.
 - X: [@GraffyCoin](https://x.com/GraffyCoin)
 
 ## Run
@@ -17,10 +17,8 @@ All settings live in [`js/config.js`](js/config.js):
 
 | Key | Purpose |
 |---|---|
-| `token.evmAddress` | CA shared by Robinhood, BSC, Base, Ethereum |
-| `token.solanaAddress` | Solana mint address |
-| `networks.<id>.tokenAddress` | Optional per-network override |
-| `networks.<id>.rpcUrls / explorer / uniswapChain` | Network settings |
+| `token.address` | $GRAFFY CA on Robinhood Chain |
+| `networks.robinhood.rpcUrls / explorer / uniswapChain` | Network settings |
 | `contracts.voting` | Season/voting contract (primary network) |
 | `api.baseUrl` | Backend base URL |
 | `adminWallets` | Wallets that see the Admin form (backend must re-verify) |
@@ -28,7 +26,7 @@ All settings live in [`js/config.js`](js/config.js):
 
 Season parameters (Minimum Holding to Submit, Upload Fee, Minimum Holding to Vote, Voting Fee, USD reference price) are **not** in the frontend. They come from the backend/contract per season and are locked once a season starts.
 
-Network icons are in `assets/networks/*.svg` — replace with official brand-kit SVGs (same filenames) if desired.
+Network icon: `assets/networks/robinhood.svg` — replace with the official brand-kit SVG if desired.
 
 ## Test mode (`api.mode: "seed"`)
 
@@ -86,7 +84,7 @@ js/config.js   # editable settings
 js/utils.js    # formatting, BigInt-safe token math
 js/api.js      # backend client
 js/chain.js    # networks, Uniswap links, on-chain reads
-js/wallet.js   # EVM + Solana login
+js/wallet.js   # wallet login (Robinhood Chain)
 js/views.js    # pages & modals
 js/app.js      # router & shell
 assets/

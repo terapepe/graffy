@@ -8,15 +8,10 @@
         .sort((a, b) => (b.primary ? 1 : 0) - (a.primary ? 1 : 0));
     },
     get(id) { const n = CFG.networks[id]; return n ? { id, ...n } : null; },
-    byChainId(cid) { return Chain.list().find((n) => n.type === "evm" && n.chainId === Number(cid)) || null; },
+    byChainId(cid) { return Chain.list().find((n) => n.chainId === Number(cid)) || null; },
     hex(cid) { return "0x" + Number(cid).toString(16); },
 
-    tokenAddress(id) {
-      const n = CFG.networks[id];
-      if (!n) return "";
-      if (n.tokenAddress) return n.tokenAddress;
-      return n.type === "solana" ? CFG.token.solanaAddress : CFG.token.evmAddress;
-    },
+    tokenAddress(id) { return CFG.networks[id] ? CFG.token.address : ""; },
     explorerToken(id) {
       const n = CFG.networks[id], a = Chain.tokenAddress(id);
       return n && a ? n.explorer + n.explorerToken + a : "";
@@ -27,7 +22,7 @@
     },
     explorerAddr(id, a) {
       const n = CFG.networks[id || CFG.primaryNetwork];
-      return n && a ? n.explorer + (n.type === "solana" ? "/account/" : "/address/") + a : "";
+      return n && a ? n.explorer + "/address/" + a : "";
     },
 
     uniswapUrl(id) {
@@ -71,10 +66,6 @@
       const n = CFG.networks[id], ca = Chain.tokenAddress(id);
       if (!n || !ca) return null;
       try {
-        if (n.type === "solana") {
-          const r = await Chain.rpc(id, "getTokenSupply", [ca]);
-          return r.value.uiAmountString;
-        }
         const dec = await Chain.evmDecimals(id, ca);
         const raw = await Chain.evmCall(id, ca, "0x18160ddd");
         return Chain.format(raw, dec);
@@ -86,15 +77,6 @@
       const n = CFG.networks[id], ca = Chain.tokenAddress(id);
       if (!n || !ca || !owner) return null;
       try {
-        if (n.type === "solana") {
-          const r = await Chain.rpc(id, "getTokenAccountsByOwner", [owner, { mint: ca }, { encoding: "jsonParsed" }]);
-          let total = 0n, dec = 0;
-          r.value.forEach((acc) => {
-            const t = acc.account.data.parsed.info.tokenAmount;
-            total += BigInt(t.amount); dec = t.decimals;
-          });
-          return Chain.format(total, dec);
-        }
         const data = "0x70a08231" + owner.toLowerCase().replace(/^0x/, "").padStart(64, "0");
         const dec = await Chain.evmDecimals(id, ca, provider);
         const raw = await Chain.evmCall(id, ca, data, provider);

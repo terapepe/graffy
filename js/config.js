@@ -15,7 +15,7 @@ window.GRAFFY_CONFIG = {
     ticker: "$GRAFFY",
     tagline: "Spray. Vote. Win.",
     totalSupply: "1000000000", // fixed total supply (display only)
-    decimals: 18,              // ERC-20 decimals on EVM networks
+    decimals: 18,              // fallback; real value read on-chain
   },
 
   social: {
@@ -24,20 +24,16 @@ window.GRAFFY_CONFIG = {
   },
 
   /**
-   * Token contract addresses (CA).
-   * Robinhood (main), BSC, Base and Ethereum share the SAME CA.
-   * Solana uses its own mint address.
+   * $GRAFFY token contract address (CA) on Robinhood Chain.
    * Leave "" until deployed — UI will show "TBA".
-   * To override a single EVM network, set networks.<id>.tokenAddress.
    */
   token: {
-    evmAddress: "0x5eE3b32f5D229626ec1A7755fDEe5137ae3336ea",
-    solanaAddress: "49iuXsmNWsrLvvT2qmPZ7CaT7mS2ow3yGMYZhcJfY6ea",
+    address: "0x5eE3b32f5D229626ec1A7755fDEe5137ae3336ea",
   },
 
   /** Smart contracts (fill in after deployment). */
   contracts: {
-    // Season / voting contract lives on the primary network.
+    // Season / voting contract on Robinhood Chain.
     voting: "",
   },
 
@@ -58,65 +54,6 @@ window.GRAFFY_CONFIG = {
       uniswapChain: "robinhood",
       color: "#CCFF00",
       icon: "assets/networks/robinhood.svg",
-      tokenAddress: "", // optional override
-    },
-    bsc: {
-      name: "BNB Smart Chain",
-      short: "BSC",
-      type: "evm",
-      chainId: 56,
-      nativeCurrency: { name: "BNB", symbol: "BNB", decimals: 18 },
-      rpcUrls: ["https://bsc-dataseed.bnbchain.org"],
-      explorer: "https://bscscan.com",
-      explorerToken: "/token/",
-      explorerTx: "/tx/",
-      uniswapChain: "bnb",
-      color: "#F3BA2F",
-      icon: "assets/networks/bsc.svg",
-      tokenAddress: "",
-    },
-    base: {
-      name: "Base",
-      short: "Base",
-      type: "evm",
-      chainId: 8453,
-      nativeCurrency: { name: "Ether", symbol: "ETH", decimals: 18 },
-      rpcUrls: ["https://mainnet.base.org"],
-      explorer: "https://basescan.org",
-      explorerToken: "/token/",
-      explorerTx: "/tx/",
-      uniswapChain: "base",
-      color: "#2F6BFF",
-      icon: "assets/networks/base.svg",
-      tokenAddress: "",
-    },
-    ethereum: {
-      name: "Ethereum",
-      short: "Ethereum",
-      type: "evm",
-      chainId: 1,
-      nativeCurrency: { name: "Ether", symbol: "ETH", decimals: 18 },
-      rpcUrls: ["https://ethereum-rpc.publicnode.com"],
-      explorer: "https://etherscan.io",
-      explorerToken: "/token/",
-      explorerTx: "/tx/",
-      uniswapChain: "ethereum",
-      color: "#8C9BFF",
-      icon: "assets/networks/ethereum.svg",
-      tokenAddress: "",
-    },
-    solana: {
-      name: "Solana",
-      short: "Solana",
-      type: "solana",
-      rpcUrls: ["https://api.mainnet-beta.solana.com"],
-      explorer: "https://solscan.io",
-      explorerToken: "/token/",
-      explorerTx: "/tx/",
-      uniswapChain: "solana",
-      color: "#B26BFF",
-      icon: "assets/networks/solana.svg",
-      tokenAddress: "",
     },
   },
 

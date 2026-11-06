@@ -342,14 +342,14 @@
 
   /* ---------------- TOKEN ---------------- */
   V.token = () => `
-    <div class="page-head"><span class="kicker">${T}</span><h1>Token</h1><p>Fixed total supply. Robinhood Chain is the main network; BSC, Base and Ethereum share the same contract address. Solana uses its own mint.</p></div>
+    <div class="page-head"><span class="kicker">${T}</span><h1>Token</h1><p>Fixed total supply, deployed on Robinhood Chain.</p></div>
     <section class="grid g-3">
       <div class="stat"><div class="k">Total Supply (fixed)</div><div class="v">${U.fmtToken(CFG.project.totalSupply, 0)}</div><div class="s">${T}</div></div>
       <div class="stat" style="--accent:var(--cyan)"><div class="k">Main network</div><div class="v" style="font-size:20px">${U.esc(Chain.get(CFG.primaryNetwork).name)}</div><div class="s">Chain ID ${Chain.get(CFG.primaryNetwork).chainId}</div></div>
-      <div class="stat" style="--accent:var(--pink)"><div class="k">Networks</div><div class="v">${Chain.list().length}</div><div class="s">${Chain.list().map((n) => n.short).join(" · ")}</div></div>
+      <div class="stat" style="--accent:var(--pink)"><div class="k">Contract</div><div class="v" style="font-size:18px">${CFG.token.address ? U.short(CFG.token.address) : "TBA"}</div><div class="s">${CFG.token.address ? "ERC-20" : "Not deployed yet"}</div></div>
     </section>
     <section>
-      <h2 class="section-title" style="margin-bottom:16px">Contract addresses</h2>
+      <h2 class="section-title" style="margin-bottom:16px">Contract address</h2>
       <div class="grid" id="caList">
         ${Chain.list().map((n) => { const ca = Chain.tokenAddress(n.id); return `<div class="ca-row" style="--net:${n.color}">
           <img src="${n.icon}" alt="">
@@ -449,36 +449,25 @@
   /* ---------------- MODALS ---------------- */
   V.buyModal = () => `
     <h3 id="modalTitle">Buy ${T}</h3>
-    <p class="sub">Choose a network. You'll be redirected to Uniswap with ${T} pre-selected.</p>
+    <p class="sub">You'll be redirected to Uniswap on Robinhood Chain with ${T} pre-selected.</p>
     <div class="net-list">
       ${Chain.list().map((n) => { const ca = Chain.tokenAddress(n.id); return `<a class="net-opt" style="--net:${n.color}" href="${Chain.uniswapUrl(n.id)}" target="_blank" rel="noopener">
         <img src="${n.icon}" alt=""><div><div class="n">${U.esc(n.name)}${n.primary ? '<span class="pill">MAIN</span>' : ""}</div>
         <div class="d">${ca ? U.short(ca, 8, 6) : "CA: TBA"}</div></div><span class="go">↗</span></a>`; }).join("")}
     </div>
-    ${CFG.token.evmAddress || CFG.token.solanaAddress ? "" : `<div class="notice">Contract address not published yet. Always verify the CA on our official X ${U.esc(CFG.social.xHandle)} before buying.</div>`}`;
-
-  V.connectModal = () => `
-    <h3 id="modalTitle">Connect wallet</h3>
-    <p class="sub">Pick the network you want to log in with.</p>
-    <div class="net-list">
-      ${Chain.list().map((n) => `<button class="net-opt" style="--net:${n.color}" data-action="pick-net" data-net="${n.id}">
-        <img src="${n.icon}" alt=""><div><div class="n">${U.esc(n.name)}${n.primary ? '<span class="pill">MAIN</span>' : ""}</div>
-        <div class="d">${n.type === "evm" ? "EVM · Chain ID " + n.chainId : "Solana wallets"}</div></div><span class="go">→</span></button>`).join("")}
-    </div>`;
+    ${CFG.token.address ? "" : `<div class="notice">Contract address not published yet. Always verify the CA on our official X ${U.esc(CFG.social.xHandle)} before buying.</div>`}`;
 
   V.walletPicker = (netId) => {
     const n = Chain.get(netId);
-    const list = n.type === "evm" ? Wallet.evmWallets().map((w) => ({ key: w.info.rdns || "injected", name: w.info.name, icon: w.info.icon }))
-      : Wallet.solanaWallets().map((w) => ({ key: w.name, name: w.name, icon: "" }));
-    return `<h3 id="modalTitle"><img src="${n.icon}" alt="" width="28" height="28" style="vertical-align:middle;margin-right:8px">${U.esc(n.name)}</h3>
-      <p class="sub">Select a wallet.</p>
+    const list = Wallet.evmWallets().map((w) => ({ key: w.info.rdns || "injected", name: w.info.name, icon: w.info.icon }));
+    return `<h3 id="modalTitle">Connect wallet</h3>
+      <p class="sub"><img src="${n.icon}" alt="" width="20" height="20" style="vertical-align:middle;margin-right:6px">${U.esc(n.name)} · Chain ID ${n.chainId}. The network is added/switched automatically.</p>
       <div class="wallet-list">
         ${list.length ? list.map((w) => `<button class="wallet-opt" data-action="connect-wallet" data-net="${netId}" data-key="${U.esc(w.key)}">
           ${w.icon ? `<img src="${U.esc(w.icon)}" alt="">` : `<img src="${n.icon}" alt="">`}<b>${U.esc(w.name)}</b></button>`).join("")
-        : `<div class="notice">No ${n.type === "evm" ? "EVM" : "Solana"} wallet detected in this browser.<br>
-            ${n.type === "evm" ? 'Install <a href="https://metamask.io" target="_blank" rel="noopener"><u>MetaMask</u></a> or <a href="https://rabby.io" target="_blank" rel="noopener"><u>Rabby</u></a>.' : 'Install <a href="https://phantom.com" target="_blank" rel="noopener"><u>Phantom</u></a> or <a href="https://solflare.com" target="_blank" rel="noopener"><u>Solflare</u></a>.'}</div>`}
+        : `<div class="notice">No wallet detected in this browser.<br>
+            'Install <a href="https://metamask.io" target="_blank" rel="noopener"><u>MetaMask</u></a> or <a href="https://rabby.io" target="_blank" rel="noopener"><u>Rabby</u></a>.'</div>`}
       </div>
-      <button class="btn btn-ghost btn-sm" style="margin-top:16px" data-action="open-connect">← Back</button>
       <div id="connMsg"></div>`;
   };
 
@@ -490,9 +479,7 @@
         <div class="param"><span class="k">Address</span><span class="v mono" style="font-size:12px">${U.short(w.address, 10, 8)}</span></div>
         <div class="param"><span class="k">${T} balance</span><span class="v">${w.balance !== null ? U.fmtToken(w.balance) : (Chain.tokenAddress(w.network) ? "—" : "CA not set")}</span></div>
       </div>
-      ${w.type === "evm" ? `<h4 style="margin:18px 0 10px">Switch network</h4><div class="net-list">
-        ${Chain.list().filter((x) => x.type === "evm").map((x) => `<button class="net-opt" style="--net:${x.color}" data-action="switch-net" data-net="${x.id}"><img src="${x.icon}" alt="">
-          <div><div class="n">${U.esc(x.name)}${x.id === w.network ? '<span class="pill">CURRENT</span>' : ""}</div><div class="d">Chain ID ${x.chainId}</div></div><span class="go">→</span></button>`).join("")}</div>` : ""}
+      ${w.network !== CFG.primaryNetwork ? `<button class="btn btn-primary btn-block" style="margin-top:16px" data-action="switch-net" data-net="${CFG.primaryNetwork}">Switch to ${U.esc(Chain.get(CFG.primaryNetwork).name)}</button>` : ""}
       <div style="display:flex;gap:8px;margin-top:18px">
         <button class="btn btn-ghost btn-sm" data-action="copy" data-text="${U.esc(w.address)}">Copy address</button>
         <a class="btn btn-ghost btn-sm" href="${Chain.explorerAddr(w.network, w.address)}" target="_blank" rel="noopener">Explorer</a>
@@ -551,7 +538,7 @@
       </div>
       <div class="check-list" style="margin-top:14px">${checks.map(([c, t]) => `<div class="check ${c ? "ok" : "bad"}"><span class="ic">${c ? "✓" : "!"}</span>${t}</div>`).join("")}</div>
       ${!w.connected ? `<button class="btn btn-ghost btn-block" style="margin-top:16px" data-action="open-connect">Connect wallet</button>`
-        : w.type === "evm" && w.network !== primary ? `<button class="btn btn-ghost btn-block" style="margin-top:16px" data-action="switch-net" data-net="${primary}">Switch to ${Chain.get(primary).short}</button>` : ""}
+        : w.network !== primary ? `<button class="btn btn-ghost btn-block" style="margin-top:16px" data-action="switch-net" data-net="${primary}">Switch to ${Chain.get(primary).short}</button>` : ""}
       <button class="btn btn-primary btn-block" style="margin-top:10px" data-action="confirm-vote" data-id="${U.esc(a.id)}" ${ok ? "" : "disabled"}>Confirm vote · ${s ? U.fmtToken(s.votingFee, 0) : "—"} ${T}</button>
       <div class="notice" style="color:var(--muted);border-color:var(--line);background:#0f0f15">1 confirmed transaction = 1 valid vote. 100% of the fee goes to the season prize pool.</div>`;
   };

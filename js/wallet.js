@@ -1,4 +1,4 @@
-/* GRAFFY — multi-network wallet login (EVM via EIP-6963/EIP-1193, Solana via injected providers). */
+/* GRAFFY — wallet login on Robinhood Chain (EVM wallets via EIP-6963/EIP-1193). */
 (function () {
   const evmProviders = new Map(); // rdns -> { info, provider }
   const KEY = "graffy.wallet";
@@ -21,16 +21,6 @@
         list.push({ info: { name: window.ethereum.isMetaMask ? "MetaMask" : "Browser Wallet", rdns: "injected", icon: "" }, provider: window.ethereum });
       }
       return list;
-    },
-
-    solanaWallets() {
-      const out = [];
-      const ph = window.phantom?.solana;
-      if (ph?.isPhantom) out.push({ name: "Phantom", provider: ph });
-      if (window.solflare?.isSolflare) out.push({ name: "Solflare", provider: window.solflare });
-      if (window.backpack?.solana) out.push({ name: "Backpack", provider: window.backpack.solana });
-      if (!out.length && window.solana) out.push({ name: "Solana Wallet", provider: window.solana });
-      return out;
     },
 
     async connectEvm(netId, rdns) {
@@ -68,18 +58,7 @@
       });
     },
 
-    async connectSolana(name) {
-      const entry = W.solanaWallets().find((w) => w.name === name) || W.solanaWallets()[0];
-      if (!entry) throw new Error("No Solana wallet detected. Install Phantom, Solflare or Backpack.");
-      const res = await entry.provider.connect();
-      const pk = (res?.publicKey || entry.provider.publicKey).toString();
-      W.set({ connected: true, type: "solana", network: "solana", address: pk, provider: entry.provider, walletName: entry.name });
-      entry.provider.on?.("disconnect", () => W.disconnect());
-      entry.provider.on?.("accountChanged", (k) => (k ? W.set({ address: k.toString() }) : W.disconnect()));
-    },
-
     async disconnect() {
-      try { if (W.state.type === "solana") await W.state.provider?.disconnect?.(); } catch {}
       W.state = { connected: false, type: null, network: null, address: null, provider: null, walletName: null, balance: null };
       try { localStorage.removeItem(KEY); } catch {}
       W.emit();
@@ -97,7 +76,7 @@
     async refreshBalance() {
       const s = W.state;
       if (!s.connected || !s.network) { s.balance = null; return; }
-      const bal = await Chain.balanceOf(s.network, s.address, s.type === "evm" ? s.provider : null);
+      const bal = await Chain.balanceOf(s.network, s.address, s.provider);
       s.balance = bal;
       W.emit();
     },
@@ -117,11 +96,6 @@
             const n = Chain.byChainId(parseInt(cid, 16));
             W.set({ connected: true, type: "evm", network: n ? n.id : null, address: acc[0], provider: entry.provider, walletName: entry.info.name, rdns: entry.info.rdns || "injected" });
             W.bindEvm(entry.provider);
-          } else if (saved.type === "solana") {
-            const entry = W.solanaWallets().find((w) => w.name === saved.walletName);
-            if (!entry) return;
-            const res = await entry.provider.connect({ onlyIfTrusted: true });
-            W.set({ connected: true, type: "solana", network: "solana", address: res.publicKey.toString(), provider: entry.provider, walletName: entry.name });
           }
         } catch {}
       }, 400);
@@ -131,10 +105,7 @@
     async signMessage(message) {
       const s = W.state;
       if (!s.connected) throw new Error("Wallet not connected");
-      if (s.type === "evm") return s.provider.request({ method: "personal_sign", params: [message, s.address] });
-      const enc = new TextEncoder().encode(message);
-      const r = await s.provider.signMessage(enc, "utf8");
-      return btoa(String.fromCharCode(...(r.signature || r)));
+      return s.provider.request({ method: "personal_sign", params: [message, s.address] });
     },
 
     isAdmin() {

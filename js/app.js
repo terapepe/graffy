@@ -76,18 +76,16 @@
     async handle(action, el) {
       switch (action) {
         case "open-buy": return this.openModal(Views.buyModal());
-        case "open-connect": return this.openModal(Views.connectModal());
+        case "open-connect": return this.openModal(Views.walletPicker(CFG.primaryNetwork));
         case "open-account": return this.openModal(Views.accountModal());
         case "close-modal": return this.closeModal();
-        case "pick-net": return this.openModal(Views.walletPicker(el.dataset.net));
         case "copy": return U.copy(el.dataset.text);
         case "disconnect": await Wallet.disconnect(); return this.closeModal();
         case "connect-wallet": {
           const net = el.dataset.net;
           el.disabled = true;
           try {
-            if (Chain.get(net).type === "evm") await Wallet.connectEvm(net, el.dataset.key);
-            else await Wallet.connectSolana(el.dataset.key);
+            await Wallet.connectEvm(net, el.dataset.key);
             this.closeModal();
             U.toast("Wallet connected");
           } catch (e) {
