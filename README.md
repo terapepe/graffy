@@ -5,7 +5,7 @@ Static frontend (HTML/CSS/vanilla JS, no build step) for the GRAFFY street-art v
 - Main network: **Robinhood Chain** (Chain ID 4663). Secondary: **BSC, Base, Ethereum** (same CA) and **Solana**.
 - Multi-network wallet login: EVM wallets (EIP-6963 / MetaMask, Rabby…) with auto network switch/add, Solana wallets (Phantom, Solflare, Backpack).
 - "Buy $GRAFFY" popup → Uniswap per network.
-- X: [@graffy](https://x.com/graffy)
+- X: [@GraffyCoin](https://x.com/GraffyCoin)
 
 ## Run
 

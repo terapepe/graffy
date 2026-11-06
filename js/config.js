@@ -19,8 +19,8 @@ window.GRAFFY_CONFIG = {
   },
 
   social: {
-    x: "https://x.com/graffy",
-    xHandle: "@graffy",
+    x: "https://x.com/GraffyCoin",
+    xHandle: "@GraffyCoin",
   },
 
   /**
