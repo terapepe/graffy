@@ -25,7 +25,9 @@
     },
 
     render() {
-      const { route, query } = this.parse();
+      let { route, query } = this.parse();
+      if (route === "admin" && !Wallet.isAdmin()) route = "home";
+      this.current = route;
       this._walletHandlers = [];
       U.$$("#nav a").forEach((a) => a.classList.toggle("active", a.dataset.route === route));
       U.$("#nav").classList.remove("open");
@@ -59,6 +61,11 @@
     },
 
     updateWalletBtn() {
+      const isAdmin = Wallet.isAdmin();
+      U.$(".nav-admin").hidden = !isAdmin;
+      // Lost admin while on the page -> leave. Became admin with #/admin in the URL -> show it.
+      if (!isAdmin && this.current === "admin") location.hash = "#/";
+      else if (isAdmin && this.parse().route === "admin" && this.current !== "admin") this.render();
       const w = Wallet.state, btn = U.$("#walletBtn");
       if (!w.connected) { btn.textContent = "Connect"; btn.dataset.action = "open-connect"; return; }
       const n = Chain.get(w.network);
@@ -140,6 +147,7 @@
 
       setInterval(() => this.tick(), 1000);
       Wallet.init();
+      this.updateWalletBtn();
       this.render();
     },
   };
