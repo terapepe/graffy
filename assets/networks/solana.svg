@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-label="solana">
+  <defs>
+    <radialGradient id="g" cx="35%" cy="30%" r="75%">
+      <stop offset="0" stop-color="#ffffff" stop-opacity=".55"/>
+      <stop offset=".45" stop-color="#B26BFF"/>
+      <stop offset="1" stop-color="#B26BFF" stop-opacity=".85"/>
+    </radialGradient>
+  </defs>
+  <path d="M14 10h40l-6 14h6l-6 14h6l-6 14H8l6-14H8l6-14H8z" fill="url(#g)" stroke="#0b0b0f" stroke-width="3" stroke-linejoin="round"/>
+  <path d="M40 52c0 4 2 7 2 9a2 2 0 0 1-4 0c0-2 2-5 2-9z" fill="#B26BFF"/>
+  <path d="M22 54c0 3 1.5 5 1.5 6.5a1.5 1.5 0 0 1-3 0c0-1.5 1.5-3.5 1.5-6.5z" fill="#B26BFF"/>
+  <text x="32" y="33" text-anchor="middle" dominant-baseline="central" font-family="Arial Black, Arial, sans-serif" font-weight="900" font-size="24" fill="#ffffff">S</text>
+</svg>
