@@ -31,8 +31,8 @@ window.GRAFFY_CONFIG = {
    * To override a single EVM network, set networks.<id>.tokenAddress.
    */
   token: {
-    evmAddress: "",
-    solanaAddress: "",
+    evmAddress: "0x5eE3b32f5D229626ec1A7755fDEe5137ae3336ea",
+    solanaAddress: "49iuXsmNWsrLvvT2qmPZ7CaT7mS2ow3yGMYZhcJfY6ea",
   },
 
   /** Smart contracts (fill in after deployment). */
