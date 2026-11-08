@@ -12,8 +12,14 @@ window.GRAFFY_CONFIG = {
     xHandle: "@GraffyCoin",
   },
 
+  /**
+   * $GRAFFY contract addresses — edit ONLY here.
+   *  address = one CA shared by every EVM network (Robinhood, Base, BSC)
+   *  sol     = Solana mint (multi mode)
+   */
   token: {
     address: "",
+    sol: "",
   },
 
   /** Smart contracts (fill in after deployment). */
@@ -49,12 +55,11 @@ window.GRAFFY_CONFIG = {
       color: "#CCFF00",
       icon: "assets/networks/robinhood.svg",
     },
-    // Extra networks (multi mode). ca = $GRAFFY address on that network ("" = TBA).
+    // Extra networks (multi mode). CA comes from token.address (EVM) / token.sol (Solana).
     solana: {
       name: "Solana",
       short: "Solana",
       type: "solana",
-      ca: "",
       rpcUrls: ["https://api.mainnet-beta.solana.com"],
       explorer: "https://solscan.io",
       explorerToken: "/token/",
@@ -69,7 +74,6 @@ window.GRAFFY_CONFIG = {
       name: "Base",
       short: "Base",
       type: "evm",
-      ca: "",
       chainId: 8453,
       nativeCurrency: { name: "Ether", symbol: "ETH", decimals: 18 },
       rpcUrls: ["https://mainnet.base.org"],
@@ -84,7 +88,6 @@ window.GRAFFY_CONFIG = {
       name: "BNB Smart Chain",
       short: "BSC",
       type: "evm",
-      ca: "",
       chainId: 56,
       nativeCurrency: { name: "BNB", symbol: "BNB", decimals: 18 },
       rpcUrls: ["https://bsc-dataseed.bnbchain.org"],

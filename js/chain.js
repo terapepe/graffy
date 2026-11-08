@@ -14,10 +14,11 @@
     byChainId(cid) { return Chain.list().find((n) => n.type === "evm" && n.chainId === Number(cid)) || null; },
     hex(cid) { return "0x" + Number(cid).toString(16); },
 
+    /** EVM networks share token.address, Solana uses token.sol. */
     tokenAddress(id) {
       const n = CFG.networks[id];
       if (!n) return "";
-      return (n.ca || (id === CFG.primaryNetwork ? CFG.token.address : "") || "").trim();
+      return ((n.type === "solana" ? CFG.token.sol : CFG.token.address) || "").trim();
     },
     explorerToken(id) {
       const n = CFG.networks[id], a = Chain.tokenAddress(id);

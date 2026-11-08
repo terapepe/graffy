@@ -18,8 +18,8 @@ All settings live in [`js/config.js`](js/config.js):
 | Key | Purpose |
 |---|---|
 | `mode` | `"single"` = only `singleNetwork` (Robinhood) · `"multi"` = Robinhood + Solana + Base + BSC |
-| `networks.<id>.ca` | $GRAFFY CA on extra networks (multi mode). Voting/upload stay on `primaryNetwork` |
-| `token.address` | $GRAFFY CA on Robinhood Chain |
+| `token.sol` | $GRAFFY mint on Solana (multi mode). Voting/upload stay on `primaryNetwork` |
+| `token.address` | $GRAFFY CA shared by all EVM networks (Robinhood, Base, BSC) |
 | `networks.robinhood.rpcUrls / explorer / uniswapChain` | Network settings |
 | `contracts.voting` | Season/voting contract (primary network) |
 | `api.baseUrl` | Backend base URL |
