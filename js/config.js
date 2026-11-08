@@ -12,13 +12,8 @@ window.GRAFFY_CONFIG = {
     xHandle: "@GraffyCoin",
   },
 
-  /**
-   * $GRAFFY contract addresses — edit ONLY here.
-   *  address = one CA shared by every EVM network (Robinhood, Base, BSC)
-   *  sol     = Solana mint (multi mode)
-   */
   token: {
-    address: "",
+    address: "0x3F7eFe5de35039f2D717F93E053e301d69A00087",
     sol: "",
   },
 
@@ -32,7 +27,6 @@ window.GRAFFY_CONFIG = {
    * Site mode:
    *  "single" = only singleNetwork (Robinhood) is shown
    *  "multi"  = all networks below (Robinhood, Solana, Base, BSC)
-   * Voting / uploads always run on primaryNetwork (Robinhood) until other contracts exist.
    */
   mode: "single",
   singleNetwork: "robinhood",
