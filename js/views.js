@@ -105,7 +105,7 @@
           <button class="btn btn-buy" data-action="open-buy">Buy ${T}</button>
         </div>
         <div class="hero-nets"><span class="label">Live on</span>
-          ${Chain.list().map((n) => `<span class="net-badge ${n.primary ? "primary" : ""}">${netImg(n)}${U.esc(n.short)}${n.primary ? '<span class="pill">MAIN</span>' : ""}</span>`).join("")}
+          ${Chain.listCA().map((n) => `<span class="net-badge ${n.primary ? "primary" : ""}">${netImg(n)}${U.esc(n.short)}${n.primary ? '<span class="pill">MAIN</span>' : ""}</span>`).join("")}
         </div>
       </div>
       <div id="homePrize">${prizeCard(null)}</div>
@@ -342,7 +342,7 @@
 
   /* ---------------- TOKEN ---------------- */
   V.token = () => `
-    <div class="page-head"><span class="kicker">${T}</span><h1>Token</h1><p>Fixed total supply, deployed on ${U.esc(Chain.list().map((n) => n.name).join(", "))}.</p></div>
+    <div class="page-head"><span class="kicker">${T}</span><h1>Token</h1><p>Fixed total supply, deployed on ${U.esc(Chain.listCA().map((n) => n.name).join(", "))}.</p></div>
     <section class="grid g-3">
       <div class="stat"><div class="k">Total Supply (fixed)</div><div class="v">${U.fmtToken(CFG.project.totalSupply, 0)}</div><div class="s">${T}</div></div>
       <div class="stat" style="--accent:var(--cyan)"><div class="k">Main network</div><div class="v" style="font-size:20px">${U.esc(Chain.get(CFG.primaryNetwork).name)}</div><div class="s">Chain ID ${Chain.get(CFG.primaryNetwork).chainId}</div></div>
@@ -351,7 +351,7 @@
     <section>
       <h2 class="section-title" style="margin-bottom:16px">Contract address</h2>
       <div class="grid" id="caList">
-        ${Chain.list().map((n) => { const ca = Chain.tokenAddress(n.id); return `<div class="ca-row" style="--net:${n.color}">
+        ${Chain.listCA().map((n) => { const ca = Chain.tokenAddress(n.id); return `<div class="ca-row" style="--net:${n.color}">
           <img src="${n.icon}" alt="">
           <div><div class="name">${U.esc(n.name)} ${n.primary ? '<span class="pill" style="font-size:10px;background:var(--lime);color:var(--bg);padding:1px 6px;border-radius:6px">MAIN</span>' : ""}</div>
             <div class="ca">${ca ? U.esc(ca) : "TBA — not deployed yet"}</div>
@@ -364,7 +364,7 @@
     </section>`;
 
   V.tokenHydrate = async () => {
-    Chain.list().forEach(async (n) => {
+    Chain.listCA().forEach(async (n) => {
       if (!Chain.tokenAddress(n.id)) return;
       const v = await Chain.totalSupply(n.id);
       const el = U.$(`[data-supply="${n.id}"]`);
@@ -449,13 +449,13 @@
   /* ---------------- MODALS ---------------- */
   V.buyModal = () => `
     <h3 id="modalTitle">Buy ${T}</h3>
-    <p class="sub">${Chain.list().length > 1 ? `Pick a network — you'll be redirected to its DEX with ${T} pre-selected.` : `You'll be redirected to ${U.esc(Chain.buyName(Chain.list()[0].id))} on ${U.esc(Chain.list()[0].name)} with ${T} pre-selected.`}</p>
+    <p class="sub">${Chain.listCA().length > 1 ? `Pick a network — you'll be redirected to its DEX with ${T} pre-selected.` : Chain.listCA().length ? `You'll be redirected to ${U.esc(Chain.buyName(Chain.listCA()[0].id))} on ${U.esc(Chain.listCA()[0].name)} with ${T} pre-selected.` : ""}</p>
     <div class="net-list">
-      ${Chain.list().map((n) => { const ca = Chain.tokenAddress(n.id); const url = Chain.uniswapUrl(n.id); return `<a class="net-opt${url ? "" : " off"}" style="--net:${n.color}" ${url ? `href="${url}" target="_blank" rel="noopener"` : ""}>
+      ${Chain.listCA().map((n) => { const ca = Chain.tokenAddress(n.id); const url = Chain.uniswapUrl(n.id); return `<a class="net-opt${url ? "" : " off"}" style="--net:${n.color}" ${url ? `href="${url}" target="_blank" rel="noopener"` : ""}>
         <img src="${n.icon}" alt=""><div><div class="n">${U.esc(n.name)}${n.primary ? '<span class="pill">MAIN</span>' : ""}</div>
         <div class="d">${ca ? U.short(ca, 8, 6) : "CA: TBA"}</div></div><span class="go">↗</span></a>`; }).join("")}
     </div>
-    ${CFG.token.address ? "" : `<div class="notice">Contract address not published yet. Always verify the CA on our official X ${U.esc(CFG.social.xHandle)} before buying.</div>`}`;
+    ${Chain.listCA().some((n) => Chain.tokenAddress(n.id)) ? "" : `<div class="notice">Contract address not published yet. Always verify the CA on our official X ${U.esc(CFG.social.xHandle)} before buying.</div>`}`;
 
   V.walletPicker = (netId) => {
     const n = Chain.get(netId), nets = Chain.list();

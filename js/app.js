@@ -126,7 +126,7 @@
       const xf = U.$("#xLinkFooter");
       xf.href = CFG.social.x;
       xf.innerHTML = `<svg viewBox="0 0 24 24" width="18" height="18"><path fill="currentColor" d="M17.5 3h3.1l-6.8 7.8L21.8 21h-6.3l-4.9-6.4L4.9 21H1.8l7.3-8.3L1.4 3h6.4l4.4 5.9L17.5 3Zm-1.1 16.2h1.7L6.8 4.7H5L16.4 19.2Z"/></svg>${U.esc(CFG.social.xHandle)}`;
-      U.$("#footerNets").innerHTML = Chain.list().map((n) => `<img src="${n.icon}" alt="${U.esc(n.name)}" title="${U.esc(n.name)}">`).join("");
+      U.$("#footerNets").innerHTML = Chain.listCA().map((n) => `<img src="${n.icon}" alt="${U.esc(n.name)}" title="${U.esc(n.name)}">`).join("");
 
       document.addEventListener("click", (e) => {
         const el = e.target.closest("[data-action]");

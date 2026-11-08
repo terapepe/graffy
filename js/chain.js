@@ -10,6 +10,8 @@
         .filter((n) => !Chain.isSingle() || n.id === CFG.singleNetwork)
         .sort((a, b) => (b.primary ? 1 : 0) - (a.primary ? 1 : 0));
     },
+    /** Networks to display: multi → only those with a CA set; single → unchanged. */
+    listCA() { return Chain.isSingle() ? Chain.list() : Chain.list().filter((n) => Chain.tokenAddress(n.id)); },
     get(id) { const n = CFG.networks[id]; return n ? { id, ...n } : null; },
     byChainId(cid) { return Chain.list().find((n) => n.type === "evm" && n.chainId === Number(cid)) || null; },
     hex(cid) { return "0x" + Number(cid).toString(16); },
