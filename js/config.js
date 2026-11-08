@@ -13,7 +13,7 @@ window.GRAFFY_CONFIG = {
   },
 
   token: {
-    address: "0x560d0827c55fb3642e192b3fe2666a317f367f57",
+    address: "",
     sol: "",
   },
 
