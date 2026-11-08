@@ -13,7 +13,7 @@ window.GRAFFY_CONFIG = {
   },
 
   token: {
-    address: "a",
+    address: "",
   },
 
   /** Smart contracts (fill in after deployment). */
