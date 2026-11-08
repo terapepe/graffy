@@ -358,7 +358,6 @@
             <div class="muted" style="font-size:12px">Live supply: <span data-supply="${n.id}">${ca ? "loading…" : "—"}</span></div></div>
           <div class="acts">
             ${ca ? `<button class="btn btn-ghost btn-sm" data-action="copy" data-text="${U.esc(ca)}">Copy</button><a class="btn btn-ghost btn-sm" href="${Chain.explorerToken(n.id)}" target="_blank" rel="noopener">Explorer</a>` : ""}
-            ${Chain.uniswapUrl(n.id) ? `<a class="btn btn-buy btn-sm" href="${Chain.uniswapUrl(n.id)}" target="_blank" rel="noopener">Buy</a>` : ""}
           </div></div>`; }).join("")}
       </div>
     </section>`;
@@ -449,11 +448,11 @@
   /* ---------------- MODALS ---------------- */
   V.buyModal = () => `
     <h3 id="modalTitle">Buy ${T}</h3>
-    <p class="sub">${Chain.listCA().length > 1 ? `Pick a network — you'll be redirected to its DEX with ${T} pre-selected.` : Chain.listCA().length ? `You'll be redirected to ${U.esc(Chain.buyName(Chain.listCA()[0].id))} on ${U.esc(Chain.listCA()[0].name)} with ${T} pre-selected.` : ""}</p>
+    <p class="sub">${Chain.listCA().some((n) => Chain.tokenAddress(n.id)) ? `Tap to copy the ${T} contract address.` : ""}</p>
     <div class="net-list">
-      ${Chain.listCA().map((n) => { const ca = Chain.tokenAddress(n.id); const url = Chain.uniswapUrl(n.id); return `<a class="net-opt${url ? "" : " off"}" style="--net:${n.color}" ${url ? `href="${url}" target="_blank" rel="noopener"` : ""}>
+      ${Chain.listCA().filter((n) => Chain.tokenAddress(n.id)).map((n) => { const ca = Chain.tokenAddress(n.id); return `<a class="net-opt" style="--net:${n.color};cursor:pointer" data-action="copy" data-text="${U.esc(ca)}">
         <img src="${n.icon}" alt=""><div><div class="n">${U.esc(n.name)}${n.primary ? '<span class="pill">MAIN</span>' : ""}</div>
-        <div class="d">${ca ? U.short(ca, 8, 6) : "CA: TBA"}</div></div><span class="go">↗</span></a>`; }).join("")}
+        <div class="d">${U.short(ca, 8, 6)}</div></div><span class="go">Copy</span></a>`; }).join("")}
     </div>
     ${Chain.listCA().some((n) => Chain.tokenAddress(n.id)) ? "" : `<div class="notice">Contract address not published yet. Always verify the CA on our official X ${U.esc(CFG.social.xHandle)} before buying.</div>`}`;
 
