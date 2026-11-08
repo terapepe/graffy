@@ -3,15 +3,22 @@
   const CFG = window.GRAFFY_CONFIG;
 
   const Chain = {
+    isSingle() { return CFG.mode === "single" && !!CFG.networks[CFG.singleNetwork]; },
+    /** Active networks for the current mode (single → 1, multi → all). */
     list() {
       return Object.entries(CFG.networks).map(([id, n]) => ({ id, ...n }))
+        .filter((n) => !Chain.isSingle() || n.id === CFG.singleNetwork)
         .sort((a, b) => (b.primary ? 1 : 0) - (a.primary ? 1 : 0));
     },
     get(id) { const n = CFG.networks[id]; return n ? { id, ...n } : null; },
-    byChainId(cid) { return Chain.list().find((n) => n.chainId === Number(cid)) || null; },
+    byChainId(cid) { return Chain.list().find((n) => n.type === "evm" && n.chainId === Number(cid)) || null; },
     hex(cid) { return "0x" + Number(cid).toString(16); },
 
-    tokenAddress(id) { return CFG.networks[id] ? CFG.token.address : ""; },
+    tokenAddress(id) {
+      const n = CFG.networks[id];
+      if (!n) return "";
+      return (n.ca || (id === CFG.primaryNetwork ? CFG.token.address : "") || "").trim();
+    },
     explorerToken(id) {
       const n = CFG.networks[id], a = Chain.tokenAddress(id);
       return n && a ? n.explorer + n.explorerToken + a : "";
@@ -22,11 +29,13 @@
     },
     explorerAddr(id, a) {
       const n = CFG.networks[id || CFG.primaryNetwork];
-      return n && a ? n.explorer + "/address/" + a : "";
+      return n && a ? n.explorer + (n.explorerAddrPath || "/address/") + a : "";
     },
 
+    buyName(id) { return CFG.networks[id]?.buyName || "Uniswap"; },
     uniswapUrl(id) {
       const n = CFG.networks[id];
+      if (n.buyUrl) { const ca = Chain.tokenAddress(id); return ca ? n.buyUrl.replace("{ca}", ca) : ""; }
       const q = new URLSearchParams({ chain: n.uniswapChain, inputCurrency: "NATIVE" });
       const ca = Chain.tokenAddress(id);
       if (ca) q.set("outputCurrency", ca);
@@ -66,6 +75,10 @@
       const n = CFG.networks[id], ca = Chain.tokenAddress(id);
       if (!n || !ca) return null;
       try {
+        if (n.type === "solana") {
+          const r = await Chain.rpc(id, "getTokenSupply", [ca]);
+          return Chain.format(r.value.amount, r.value.decimals);
+        }
         const dec = await Chain.evmDecimals(id, ca);
         const raw = await Chain.evmCall(id, ca, "0x18160ddd");
         return Chain.format(raw, dec);
@@ -77,6 +90,12 @@
       const n = CFG.networks[id], ca = Chain.tokenAddress(id);
       if (!n || !ca || !owner) return null;
       try {
+        if (n.type === "solana") {
+          const r = await Chain.rpc(id, "getTokenAccountsByOwner", [owner, { mint: ca }, { encoding: "jsonParsed" }]);
+          let raw = 0n, dec = 0;
+          for (const acc of r.value || []) { const t = acc.account.data.parsed.info.tokenAmount; raw += BigInt(t.amount); dec = t.decimals; }
+          return Chain.format(raw, dec);
+        }
         const data = "0x70a08231" + owner.toLowerCase().replace(/^0x/, "").padStart(64, "0");
         const dec = await Chain.evmDecimals(id, ca, provider);
         const raw = await Chain.evmCall(id, ca, data, provider);

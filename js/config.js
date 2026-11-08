@@ -22,6 +22,15 @@ window.GRAFFY_CONFIG = {
     voting: "",
   },
 
+  /**
+   * Site mode:
+   *  "single" = only singleNetwork (Robinhood) is shown
+   *  "multi"  = all networks below (Robinhood, Solana, Base, BSC)
+   * Voting / uploads always run on primaryNetwork (Robinhood) until other contracts exist.
+   */
+  mode: "single",
+  singleNetwork: "robinhood",
+
   primaryNetwork: "robinhood",
 
   networks: {
@@ -39,6 +48,53 @@ window.GRAFFY_CONFIG = {
       uniswapChain: "robinhood",
       color: "#CCFF00",
       icon: "assets/networks/robinhood.svg",
+    },
+    // Extra networks (multi mode). ca = $GRAFFY address on that network ("" = TBA).
+    solana: {
+      name: "Solana",
+      short: "Solana",
+      type: "solana",
+      ca: "",
+      rpcUrls: ["https://api.mainnet-beta.solana.com"],
+      explorer: "https://solscan.io",
+      explorerToken: "/token/",
+      explorerTx: "/tx/",
+      explorerAddrPath: "/account/",
+      buyName: "Jupiter",
+      buyUrl: "https://jup.ag/swap/SOL-{ca}",
+      color: "#9945FF",
+      icon: "assets/networks/solana.svg",
+    },
+    base: {
+      name: "Base",
+      short: "Base",
+      type: "evm",
+      ca: "",
+      chainId: 8453,
+      nativeCurrency: { name: "Ether", symbol: "ETH", decimals: 18 },
+      rpcUrls: ["https://mainnet.base.org"],
+      explorer: "https://basescan.org",
+      explorerToken: "/token/",
+      explorerTx: "/tx/",
+      uniswapChain: "base",
+      color: "#0052FF",
+      icon: "assets/networks/base.svg",
+    },
+    bsc: {
+      name: "BNB Smart Chain",
+      short: "BSC",
+      type: "evm",
+      ca: "",
+      chainId: 56,
+      nativeCurrency: { name: "BNB", symbol: "BNB", decimals: 18 },
+      rpcUrls: ["https://bsc-dataseed.bnbchain.org"],
+      explorer: "https://bscscan.com",
+      explorerToken: "/token/",
+      explorerTx: "/tx/",
+      buyName: "PancakeSwap",
+      buyUrl: "https://pancakeswap.finance/swap?chain=bsc&inputCurrency=BNB&outputCurrency={ca}",
+      color: "#F0B90B",
+      icon: "assets/networks/bsc.svg",
     },
   },
 

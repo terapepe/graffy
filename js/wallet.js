@@ -2,6 +2,11 @@
 (function () {
   const evmProviders = new Map(); // rdns -> { info, provider }
   const KEY = "graffy.wallet";
+  const SOL_WALLETS = [
+    { key: "phantom", name: "Phantom", url: "https://phantom.app", get: () => window.phantom?.solana?.isPhantom ? window.phantom.solana : (window.solana?.isPhantom ? window.solana : null) },
+    { key: "solflare", name: "Solflare", url: "https://solflare.com", get: () => window.solflare?.isSolflare ? window.solflare : null },
+    { key: "backpack", name: "Backpack", url: "https://backpack.app", get: () => window.backpack?.solana || null },
+  ];
 
   const W = {
     state: { connected: false, type: null, network: null, address: null, provider: null, walletName: null, balance: null },
@@ -21,6 +26,28 @@
         list.push({ info: { name: window.ethereum.isMetaMask ? "MetaMask" : "Browser Wallet", rdns: "injected", icon: "" }, provider: window.ethereum });
       }
       return list;
+    },
+
+    /** Solana wallets for the picker (installed or not). */
+    solWallets() {
+      return SOL_WALLETS.map((w) => ({ key: w.key, name: w.name, url: w.url, icon: w.get()?.icon || "", installed: !!w.get() }));
+    },
+
+    /** Connect on any network: EVM (EIP-6963) or Solana (injected). */
+    async connect(netId, key) {
+      return Chain.get(netId)?.type === "solana" ? W.connectSol(netId, key) : W.connectEvm(netId, key);
+    },
+
+    async connectSol(netId, key) {
+      const def = SOL_WALLETS.find((w) => w.key === key), p = def && def.get();
+      if (!p) throw new Error(`${def ? def.name : "Solana wallet"} not detected.`);
+      const r = await p.connect();
+      const pk = (r && r.publicKey) || p.publicKey;
+      W.set({ connected: true, type: "solana", network: netId, address: pk.toString(), provider: p, walletName: def.name, rdns: key });
+      if (!p._graffyBound && p.on) {
+        p._graffyBound = true;
+        p.on("accountChanged", (k) => { if (W.state.type === "solana") k ? W.set({ address: k.toString() }) : W.disconnect(); });
+      }
     },
 
     async connectEvm(netId, rdns) {
@@ -59,6 +86,7 @@
     },
 
     async disconnect() {
+      if (W.state.type === "solana" && W.state.provider?.disconnect) { try { await W.state.provider.disconnect(); } catch {} }
       W.state = { connected: false, type: null, network: null, address: null, provider: null, walletName: null, balance: null };
       try { localStorage.removeItem(KEY); } catch {}
       W.emit();
@@ -76,7 +104,7 @@
     async refreshBalance() {
       const s = W.state;
       if (!s.connected || !s.network) { s.balance = null; return; }
-      const bal = await Chain.balanceOf(s.network, s.address, s.provider);
+      const bal = await Chain.balanceOf(s.network, s.address, s.type === "evm" ? s.provider : null);
       s.balance = bal;
       W.emit();
     },
@@ -87,7 +115,13 @@
       if (!saved) return;
       setTimeout(async () => {
         try {
-          if (saved.type === "evm") {
+          if (saved.type === "solana") {
+            const def = SOL_WALLETS.find((w) => w.key === saved.rdns), p = def && def.get();
+            if (!p || !Chain.get(saved.network)) return;
+            const r = await p.connect({ onlyIfTrusted: true });
+            const pk = (r && r.publicKey) || p.publicKey;
+            if (pk) W.set({ connected: true, type: "solana", network: saved.network, address: pk.toString(), provider: p, walletName: def.name, rdns: def.key });
+          } else if (saved.type === "evm") {
             const entry = W.evmWallets().find((w) => (w.info.rdns || "injected") === saved.rdns) || W.evmWallets()[0];
             if (!entry) return;
             const acc = await entry.provider.request({ method: "eth_accounts" });
@@ -105,6 +139,10 @@
     async signMessage(message) {
       const s = W.state;
       if (!s.connected) throw new Error("Wallet not connected");
+      if (s.type === "solana") {
+        const r = await s.provider.signMessage(new TextEncoder().encode(message), "utf8");
+        return btoa(String.fromCharCode(...(r.signature || r)));
+      }
       return s.provider.request({ method: "personal_sign", params: [message, s.address] });
     },
 

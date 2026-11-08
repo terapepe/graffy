@@ -342,7 +342,7 @@
 
   /* ---------------- TOKEN ---------------- */
   V.token = () => `
-    <div class="page-head"><span class="kicker">${T}</span><h1>Token</h1><p>Fixed total supply, deployed on Robinhood Chain.</p></div>
+    <div class="page-head"><span class="kicker">${T}</span><h1>Token</h1><p>Fixed total supply, deployed on ${U.esc(Chain.list().map((n) => n.name).join(", "))}.</p></div>
     <section class="grid g-3">
       <div class="stat"><div class="k">Total Supply (fixed)</div><div class="v">${U.fmtToken(CFG.project.totalSupply, 0)}</div><div class="s">${T}</div></div>
       <div class="stat" style="--accent:var(--cyan)"><div class="k">Main network</div><div class="v" style="font-size:20px">${U.esc(Chain.get(CFG.primaryNetwork).name)}</div><div class="s">Chain ID ${Chain.get(CFG.primaryNetwork).chainId}</div></div>
@@ -358,7 +358,7 @@
             <div class="muted" style="font-size:12px">Live supply: <span data-supply="${n.id}">${ca ? "loading…" : "—"}</span></div></div>
           <div class="acts">
             ${ca ? `<button class="btn btn-ghost btn-sm" data-action="copy" data-text="${U.esc(ca)}">Copy</button><a class="btn btn-ghost btn-sm" href="${Chain.explorerToken(n.id)}" target="_blank" rel="noopener">Explorer</a>` : ""}
-            <a class="btn btn-buy btn-sm" href="${Chain.uniswapUrl(n.id)}" target="_blank" rel="noopener">Buy</a>
+            ${Chain.uniswapUrl(n.id) ? `<a class="btn btn-buy btn-sm" href="${Chain.uniswapUrl(n.id)}" target="_blank" rel="noopener">Buy</a>` : ""}
           </div></div>`; }).join("")}
       </div>
     </section>`;
@@ -449,24 +449,28 @@
   /* ---------------- MODALS ---------------- */
   V.buyModal = () => `
     <h3 id="modalTitle">Buy ${T}</h3>
-    <p class="sub">You'll be redirected to Uniswap on Robinhood Chain with ${T} pre-selected.</p>
+    <p class="sub">${Chain.list().length > 1 ? `Pick a network — you'll be redirected to its DEX with ${T} pre-selected.` : `You'll be redirected to ${U.esc(Chain.buyName(Chain.list()[0].id))} on ${U.esc(Chain.list()[0].name)} with ${T} pre-selected.`}</p>
     <div class="net-list">
-      ${Chain.list().map((n) => { const ca = Chain.tokenAddress(n.id); return `<a class="net-opt" style="--net:${n.color}" href="${Chain.uniswapUrl(n.id)}" target="_blank" rel="noopener">
+      ${Chain.list().map((n) => { const ca = Chain.tokenAddress(n.id); const url = Chain.uniswapUrl(n.id); return `<a class="net-opt${url ? "" : " off"}" style="--net:${n.color}" ${url ? `href="${url}" target="_blank" rel="noopener"` : ""}>
         <img src="${n.icon}" alt=""><div><div class="n">${U.esc(n.name)}${n.primary ? '<span class="pill">MAIN</span>' : ""}</div>
         <div class="d">${ca ? U.short(ca, 8, 6) : "CA: TBA"}</div></div><span class="go">↗</span></a>`; }).join("")}
     </div>
     ${CFG.token.address ? "" : `<div class="notice">Contract address not published yet. Always verify the CA on our official X ${U.esc(CFG.social.xHandle)} before buying.</div>`}`;
 
   V.walletPicker = (netId) => {
-    const n = Chain.get(netId);
-    const list = Wallet.evmWallets().map((w) => ({ key: w.info.rdns || "injected", name: w.info.name, icon: w.info.icon }));
+    const n = Chain.get(netId), nets = Chain.list();
+    const list = n.type === "solana"
+      ? Wallet.solWallets()
+      : Wallet.evmWallets().map((w) => ({ key: w.info.rdns || "injected", name: w.info.name, icon: w.info.icon, installed: true }));
     return `<h3 id="modalTitle">Connect wallet</h3>
-      <p class="sub"><img src="${n.icon}" alt="" width="20" height="20" style="vertical-align:middle;margin-right:6px">${U.esc(n.name)} · Chain ID ${n.chainId}. The network is added/switched automatically.</p>
+      ${nets.length > 1 ? `<div class="net-tabs">${nets.map((x) => `<button class="net-tab ${x.id === netId ? "active" : ""}" style="--net:${x.color}" data-action="pick-net" data-net="${x.id}"><img src="${x.icon}" alt="">${U.esc(x.short)}</button>`).join("")}</div>` : ""}
+      <p class="sub"><img src="${n.icon}" alt="" width="20" height="20" style="vertical-align:middle;margin-right:6px">${U.esc(n.name)}${n.type === "evm" ? ` · Chain ID ${n.chainId}. The network is added/switched automatically.` : " · Solana wallets."}</p>
       <div class="wallet-list">
-        ${list.length ? list.map((w) => `<button class="wallet-opt" data-action="connect-wallet" data-net="${netId}" data-key="${U.esc(w.key)}">
-          ${w.icon ? `<img src="${U.esc(w.icon)}" alt="">` : `<img src="${n.icon}" alt="">`}<b>${U.esc(w.name)}</b></button>`).join("")
+        ${list.length ? list.map((w) => w.installed ? `<button class="wallet-opt" data-action="connect-wallet" data-net="${netId}" data-key="${U.esc(w.key)}">
+          <img src="${U.esc(w.icon || n.icon)}" alt=""><b>${U.esc(w.name)}</b></button>`
+          : `<a class="wallet-opt" href="${U.esc(w.url)}" target="_blank" rel="noopener"><img src="${n.icon}" alt=""><b>${U.esc(w.name)}</b><span class="muted" style="margin-left:auto;font-size:12px">Install ↗</span></a>`).join("")
         : `<div class="notice">No wallet detected in this browser.<br>
-            'Install <a href="https://metamask.io" target="_blank" rel="noopener"><u>MetaMask</u></a> or <a href="https://rabby.io" target="_blank" rel="noopener"><u>Rabby</u></a>.'</div>`}
+            Install <a href="https://metamask.io" target="_blank" rel="noopener"><u>MetaMask</u></a> or <a href="https://rabby.io" target="_blank" rel="noopener"><u>Rabby</u></a>.</div>`}
       </div>
       <div id="connMsg"></div>`;
   };
