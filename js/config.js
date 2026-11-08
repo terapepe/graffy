@@ -14,7 +14,7 @@ window.GRAFFY_CONFIG = {
 
   token: {
     address: "0x6A0c0B9677E3B0ca90799BC2C2e9B957342f66eA",
-    sol: "",
+    sol: "EgaPcFAbf9crtZD1YwuFeGs1oN3M9dVGi3zr8NEV6ea",
   },
 
   /** Smart contracts (fill in after deployment). */
