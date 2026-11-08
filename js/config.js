@@ -14,7 +14,7 @@ window.GRAFFY_CONFIG = {
 
   token: {
     address: "",
-    sol: "",
+    sol: "9gHMPkU7yV2a5WBHTw7dxSjd5vgfpQXqtwLefEVfLoat",
   },
 
   /** Smart contracts (fill in after deployment). */
@@ -28,7 +28,7 @@ window.GRAFFY_CONFIG = {
    *  "single" = only singleNetwork (Robinhood) is shown
    *  "multi"  = all networks below (Robinhood, Solana, Base, BSC)
    */
-  mode: "single",
+  mode: "multi",
   singleNetwork: "robinhood",
 
   primaryNetwork: "robinhood",
