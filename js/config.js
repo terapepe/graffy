@@ -12,6 +12,8 @@ window.GRAFFY_CONFIG = {
     xHandle: "@GraffyCoin",
   },
 
+  /** $GRAFFY CA: address = shared by all EVM networks (Robinhood, Base, BSC) · sol = Solana mint.
+   *  A network can override with its own `ca` below. */
   token: {
     address: "0x6A0c0B9677E3B0ca90799BC2C2e9B957342f66eA",
     sol: "EgaPcFAbf9crtZD1YwuFeGs1oN3M9dVGi3zr8NEV6ea",
@@ -25,12 +27,12 @@ window.GRAFFY_CONFIG = {
 
   /**
    * Site mode:
-   *  "single" = only singleNetwork (Robinhood) is shown
-   *  "multi"  = all networks below (Robinhood, Solana, Base, BSC)
+   *  "single" = only singleNetwork is shown (robinhood | solana | base | bsc) — it is also the main network
+   *  "multi"  = always all 4 networks, ordered by multiOrder; voting/upload use primaryNetwork
    */
   mode: "multi",
   singleNetwork: "robinhood",
-
+  multiOrder: ["solana", "robinhood", "base", "bsc"],
   primaryNetwork: "robinhood",
 
   networks: {
@@ -38,18 +40,17 @@ window.GRAFFY_CONFIG = {
       name: "Robinhood Chain",
       short: "Robinhood",
       type: "evm",
-      primary: true,
       chainId: 4663,
       nativeCurrency: { name: "Ether", symbol: "ETH", decimals: 18 },
       rpcUrls: ["https://rpc.mainnet.chain.robinhood.com"],
       explorer: "https://robinhoodchain.blockscout.com",
       explorerToken: "/token/",
       explorerTx: "/tx/",
-      uniswapChain: "robinhood",
       color: "#CCFF00",
+      tagline: "Fast, low-fee L2 built for trading",
       icon: "assets/networks/robinhood.svg",
+      ca: "",
     },
-    // Extra networks (multi mode). CA comes from token.address (EVM) / token.sol (Solana).
     solana: {
       name: "Solana",
       short: "Solana",
@@ -59,10 +60,10 @@ window.GRAFFY_CONFIG = {
       explorerToken: "/token/",
       explorerTx: "/tx/",
       explorerAddrPath: "/account/",
-      buyName: "Jupiter",
-      buyUrl: "https://jup.ag/swap/SOL-{ca}",
       color: "#9945FF",
+      tagline: "Lightning-fast and meme-native",
       icon: "assets/networks/solana.svg",
+      ca: "",
     },
     base: {
       name: "Base",
@@ -74,9 +75,10 @@ window.GRAFFY_CONFIG = {
       explorer: "https://basescan.org",
       explorerToken: "/token/",
       explorerTx: "/tx/",
-      uniswapChain: "base",
       color: "#0052FF",
+      tagline: "Onchain with the Base community",
       icon: "assets/networks/base.svg",
+      ca: "",
     },
     bsc: {
       name: "BNB Smart Chain",
@@ -88,15 +90,11 @@ window.GRAFFY_CONFIG = {
       explorer: "https://bscscan.com",
       explorerToken: "/token/",
       explorerTx: "/tx/",
-      buyName: "PancakeSwap",
-      buyUrl: "https://pancakeswap.finance/swap?chain=bsc&inputCurrency=BNB&outputCurrency={ca}",
       color: "#F0B90B",
+      tagline: "Degen energy on BNB Smart Chain",
       icon: "assets/networks/bsc.svg",
+      ca: "",
     },
-  },
-
-  uniswap: {
-    base: "https://app.uniswap.org/swap",
   },
 
   /**

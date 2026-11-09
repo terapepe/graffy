@@ -10,6 +10,7 @@
   --text: #f2f2f5;
   --muted: #8d8da0;
   --lime: #ccff00;
+  --chain: var(--lime); /* set to the network color in single mode */
   --pink: #ff2e88;
   --cyan: #00e5ff;
   --orange: #ff7a1a;
@@ -97,9 +98,9 @@ img { max-width: 100%; display: block; }
 .btn:disabled { opacity: .45; cursor: not-allowed; }
 .btn-buy {
   background: var(--pink); color: #fff;
-  box-shadow: 3px 3px 0 var(--lime);
+  box-shadow: 3px 3px 0 var(--chain);
 }
-.btn-buy:hover { box-shadow: 5px 5px 0 var(--lime); transform: translate(-1px, -1px); }
+.btn-buy:hover { box-shadow: 5px 5px 0 var(--chain); transform: translate(-1px, -1px); }
 .btn-primary { background: var(--lime); color: var(--bg); box-shadow: 3px 3px 0 var(--pink); }
 .btn-primary:hover:not(:disabled) { box-shadow: 5px 5px 0 var(--pink); transform: translate(-1px,-1px); }
 .btn-ghost { background: var(--card); border-color: var(--line); }
@@ -164,7 +165,20 @@ section { margin-top: 56px; }
   border-radius: 999px; background: var(--card); border: 1px solid var(--line); font-size: 13px; font-weight: 500;
 }
 .net-badge img { width: 24px; height: 24px; }
-.net-badge.primary { border-color: var(--lime); }
+.net-badge.primary { border-color: var(--chain); }
+.net-tagline { margin: 18px 0 0; font-weight: 700; color: var(--chain); }
+.ca-cards { display: grid; gap: 12px; margin-top: 22px; max-width: 560px; }
+.ca-card { border: 2px solid var(--net); border-radius: 14px; padding: 12px 14px; background: color-mix(in srgb, var(--net) 7%, var(--card)); box-shadow: 4px 4px 0 color-mix(in srgb, var(--net) 45%, transparent); }
+.ca-head { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; }
+.ca-head .net-badge { padding: 3px 10px 3px 3px; font-size: 12px; }
+.ca-head .net-badge img { width: 18px; height: 18px; }
+.ca-ex { font-size: 12px; color: var(--muted); }
+.ca-ex:first-of-type { margin-left: auto; }
+.ca-ex:hover { color: var(--text); }
+.ca-body { display: flex; align-items: center; gap: 12px; margin-top: 10px; }
+.ca-body code { flex: 1; min-width: 0; font-family: var(--mono); font-size: 13px; word-break: break-all; }
+.btn-ca { background: var(--net); color: var(--bg); box-shadow: 2px 2px 0 var(--text); }
+.btn-ca:hover { transform: translate(-1px, -1px); box-shadow: 3px 3px 0 var(--text); }
 .net-badge .pill { font-size: 10px; background: var(--lime); color: var(--bg); padding: 1px 6px; border-radius: 6px; font-weight: 700; }
 
 /* ---------- Prize pool ---------- */

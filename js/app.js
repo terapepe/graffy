@@ -75,7 +75,10 @@
 
     async handle(action, el) {
       switch (action) {
-        case "open-buy": return this.openModal(Views.buyModal());
+        case "open-ca": {
+          const g = Chain.caGroups();
+          return g.length === 1 && g[0].ca ? U.copy(g[0].ca) : this.openModal(Views.caModal());
+        }
         case "open-connect": return this.openModal(Views.walletPicker(Chain.list()[0].id));
         case "pick-net": return (U.$("#modalBody").innerHTML = Views.walletPicker(el.dataset.net));
         case "open-account": return this.openModal(Views.accountModal());
@@ -122,6 +125,12 @@
     },
 
     init() {
+      // Per-network look: single → accent of that network; title follows active networks
+      const main = Chain.get(Chain.primaryId());
+      if (Chain.isSingle()) document.documentElement.style.setProperty("--chain", main.color);
+      document.title = `GRAFFY — Street Art Seasons on ${Chain.isSingle() ? main.name : Chain.list().map((n) => n.short).join(", ")}`;
+      const g = Chain.caGroups();
+      U.$("#caBtnLabel").textContent = g.length === 1 ? `Copy ${g[0].nets[0].short} CA` : "Copy CA";
       U.$("#xLink").href = CFG.social.x;
       const xf = U.$("#xLinkFooter");
       xf.href = CFG.social.x;

@@ -3,16 +3,29 @@
   const CFG = window.GRAFFY_CONFIG;
 
   const Chain = {
-    isSingle() { return CFG.mode === "single" && !!CFG.networks[CFG.singleNetwork]; },
-    /** Active networks for the current mode (single → 1, multi → all). */
-    list() {
-      return Object.entries(CFG.networks).map(([id, n]) => ({ id, ...n }))
-        .filter((n) => !Chain.isSingle() || n.id === CFG.singleNetwork)
-        .sort((a, b) => (b.primary ? 1 : 0) - (a.primary ? 1 : 0));
+    isSingle() { return CFG.mode !== "multi"; },
+    /** Main network: single → singleNetwork · multi → primaryNetwork (voting/upload). */
+    primaryId() {
+      const ids = Object.keys(CFG.networks);
+      const want = Chain.isSingle() ? CFG.singleNetwork : CFG.primaryNetwork;
+      return CFG.networks[want] ? want : ids[0];
     },
-    /** Networks to display: multi → only those with a CA set; single → unchanged. */
-    listCA() { return Chain.isSingle() ? Chain.list() : Chain.list().filter((n) => Chain.tokenAddress(n.id)); },
-    get(id) { const n = CFG.networks[id]; return n ? { id, ...n } : null; },
+    /** Active networks (single → 1, multi → always all, ordered by multiOrder). */
+    list() {
+      if (Chain.isSingle()) return [Chain.get(Chain.primaryId())];
+      return [...new Set([...(CFG.multiOrder || []), ...Object.keys(CFG.networks)])]
+        .filter((id) => CFG.networks[id]).map(Chain.get);
+    },
+    listCA() { return Chain.list(); },
+    /** Networks sharing the same CA grouped → one "Copy CA" button each (multi: RH/BASE/BSC + SOL). */
+    caGroups() {
+      return Chain.list().reduce((acc, n) => {
+        const ca = Chain.tokenAddress(n.id), key = ca ? ca.toLowerCase() : n.id, g = acc.find((x) => x.key === key);
+        g ? g.nets.push(n) : acc.push({ key, ca, nets: [n] });
+        return acc;
+      }, []);
+    },
+    get(id) { const n = CFG.networks[id]; return n ? { id, ...n, primary: id === Chain.primaryId() } : null; },
     byChainId(cid) { return Chain.list().find((n) => n.type === "evm" && n.chainId === Number(cid)) || null; },
     hex(cid) { return "0x" + Number(cid).toString(16); },
 
@@ -20,30 +33,21 @@
     tokenAddress(id) {
       const n = CFG.networks[id];
       if (!n) return "";
-      return ((n.type === "solana" ? CFG.token.sol : CFG.token.address) || "").trim();
+      return (n.ca || (n.type === "solana" ? CFG.token.sol : CFG.token.address) || "").trim();
     },
     explorerToken(id) {
       const n = CFG.networks[id], a = Chain.tokenAddress(id);
       return n && a ? n.explorer + n.explorerToken + a : "";
     },
     explorerTx(id, tx) {
-      const n = CFG.networks[id || CFG.primaryNetwork];
+      const n = CFG.networks[id || Chain.primaryId()];
       return n && tx ? n.explorer + n.explorerTx + tx : "";
     },
     explorerAddr(id, a) {
-      const n = CFG.networks[id || CFG.primaryNetwork];
+      const n = CFG.networks[id || Chain.primaryId()];
       return n && a ? n.explorer + (n.explorerAddrPath || "/address/") + a : "";
     },
 
-    buyName(id) { return CFG.networks[id]?.buyName || "Uniswap"; },
-    uniswapUrl(id) {
-      const n = CFG.networks[id];
-      if (n.buyUrl) { const ca = Chain.tokenAddress(id); return ca ? n.buyUrl.replace("{ca}", ca) : ""; }
-      const q = new URLSearchParams({ chain: n.uniswapChain, inputCurrency: "NATIVE" });
-      const ca = Chain.tokenAddress(id);
-      if (ca) q.set("outputCurrency", ca);
-      return CFG.uniswap.base + "?" + q.toString();
-    },
 
     async rpc(id, method, params) {
       const n = CFG.networks[id];

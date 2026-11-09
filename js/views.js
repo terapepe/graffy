@@ -90,6 +90,19 @@
     </article>`;
   }
 
+  // One card per CA group (networks sharing a CA are merged) with a Copy CA button
+  const caCards = () => Chain.caGroups().map(({ ca, nets }) => {
+    const color = nets.length === 1 ? nets[0].color : "#ccff00";
+    const rgb = parseInt(color.slice(1), 16), ink = (0.299 * (rgb >> 16) + 0.587 * ((rgb >> 8) & 255) + 0.114 * (rgb & 255)) / 255 > 0.6 ? "var(--bg)" : "#fff";
+    const tag = nets.map((n) => n.short).join("/");
+    return `<div class="ca-card" style="--net:${color}">
+      <div class="ca-head">${nets.map((n) => `<span class="net-badge">${netImg(n)}${U.esc(n.short)}</span>`).join("")}
+        ${ca ? nets.map((n) => `<a class="ca-ex" href="${Chain.explorerToken(n.id)}" target="_blank" rel="noopener">${nets.length > 1 ? U.esc(n.short) : "Explorer"} ↗</a>`).join("") : ""}</div>
+      <div class="ca-body"><code>${ca ? U.esc(ca) : "TBA — not deployed yet"}</code>
+        ${ca ? `<button class="btn btn-ca btn-sm" style="color:${ink}" data-action="copy" data-text="${U.esc(ca)}">Copy ${U.esc(tag)} CA</button>` : ""}</div>
+    </div>`;
+  }).join("");
+
   const V = {};
 
   /* ---------------- HOME ---------------- */
@@ -102,8 +115,9 @@
         <div class="hero-ctas">
           <a href="#/gallery" class="btn btn-primary">Browse & Vote</a>
           <a href="#/submit" class="btn btn-ghost">Submit Artwork</a>
-          <button class="btn btn-buy" data-action="open-buy">Buy ${T}</button>
         </div>
+        ${Chain.isSingle() && Chain.get(Chain.primaryId()).tagline ? `<p class="net-tagline">${U.esc(Chain.get(Chain.primaryId()).tagline)}</p>` : ""}
+        <div class="ca-cards">${caCards()}</div>
         <div class="hero-nets"><span class="label">Live on</span>
           ${Chain.listCA().map((n) => `<span class="net-badge ${n.primary ? "primary" : ""}">${netImg(n)}${U.esc(n.short)}${n.primary ? '<span class="pill">MAIN</span>' : ""}</span>`).join("")}
         </div>
@@ -260,7 +274,7 @@
     U.$("#subParams").innerHTML = s ? paramsList(s) : paramsList(null).replace(/<span class="skeleton"[^>]*>.<\/span>/g, "—");
     const render = () => {
       const w = Wallet.state;
-      const primary = CFG.primaryNetwork;
+      const primary = Chain.primaryId();
       const hold = U.toUnits(w.balance), min = U.toUnits(s?.minHoldingToSubmit);
       const checks = [
         [w.connected, "Wallet connected", w.connected ? U.short(w.address) : "Connect to continue"],
@@ -345,8 +359,8 @@
     <div class="page-head"><span class="kicker">${T}</span><h1>Token</h1><p>Fixed total supply, deployed on ${U.esc(Chain.listCA().map((n) => n.name).join(", "))}.</p></div>
     <section class="grid g-3">
       <div class="stat"><div class="k">Total Supply (fixed)</div><div class="v">${U.fmtToken(CFG.project.totalSupply, 0)}</div><div class="s">${T}</div></div>
-      <div class="stat" style="--accent:var(--cyan)"><div class="k">Main network</div><div class="v" style="font-size:20px">${U.esc(Chain.get(CFG.primaryNetwork).name)}</div><div class="s">Chain ID ${Chain.get(CFG.primaryNetwork).chainId}</div></div>
-      <div class="stat" style="--accent:var(--pink)"><div class="k">Contract</div><div class="v" style="font-size:18px">${CFG.token.address ? U.short(CFG.token.address) : "TBA"}</div><div class="s">${CFG.token.address ? "ERC-20" : "Not deployed yet"}</div></div>
+      <div class="stat" style="--accent:var(--cyan)"><div class="k">Main network</div><div class="v" style="font-size:20px">${U.esc(Chain.get(Chain.primaryId()).name)}</div><div class="s">${Chain.get(Chain.primaryId()).chainId ? "Chain ID " + Chain.get(Chain.primaryId()).chainId : "Solana mainnet"}</div></div>
+      <div class="stat" style="--accent:var(--pink)"><div class="k">Contract</div><div class="v" style="font-size:18px">${Chain.tokenAddress(Chain.primaryId()) ? U.short(Chain.tokenAddress(Chain.primaryId())) : "TBA"}</div><div class="s">${Chain.tokenAddress(Chain.primaryId()) ? (Chain.get(Chain.primaryId()).type === "solana" ? "SPL token" : "ERC-20") : "Not deployed yet"}</div></div>
     </section>
     <section>
       <h2 class="section-title" style="margin-bottom:16px">Contract address</h2>
@@ -446,15 +460,10 @@
   };
 
   /* ---------------- MODALS ---------------- */
-  V.buyModal = () => `
-    <h3 id="modalTitle">Buy ${T}</h3>
-    <p class="sub">${Chain.listCA().some((n) => Chain.tokenAddress(n.id)) ? `Tap to copy the ${T} contract address.` : ""}</p>
-    <div class="net-list">
-      ${Chain.listCA().filter((n) => Chain.tokenAddress(n.id)).map((n) => { const ca = Chain.tokenAddress(n.id); return `<a class="net-opt" style="--net:${n.color};cursor:pointer" data-action="copy" data-text="${U.esc(ca)}">
-        <img src="${n.icon}" alt=""><div><div class="n">${U.esc(n.name)}${n.primary ? '<span class="pill">MAIN</span>' : ""}</div>
-        <div class="d">${U.short(ca, 8, 6)}</div></div><span class="go">Copy</span></a>`; }).join("")}
-    </div>
-    ${Chain.listCA().some((n) => Chain.tokenAddress(n.id)) ? "" : `<div class="notice">Contract address not published yet. Always verify the CA on our official X ${U.esc(CFG.social.xHandle)} before buying.</div>`}`;
+  V.caModal = () => `
+    <h3 id="modalTitle">${T} contract address</h3>
+    <p class="sub">Tap to copy. Always verify the CA on our official X ${U.esc(CFG.social.xHandle)}.</p>
+    <div class="ca-cards">${caCards()}</div>`;
 
   V.walletPicker = (netId) => {
     const n = Chain.get(netId), nets = Chain.list();
@@ -482,7 +491,7 @@
         <div class="param"><span class="k">Address</span><span class="v mono" style="font-size:12px">${U.short(w.address, 10, 8)}</span></div>
         <div class="param"><span class="k">${T} balance</span><span class="v">${w.balance !== null ? U.fmtToken(w.balance) : (Chain.tokenAddress(w.network) ? "—" : "CA not set")}</span></div>
       </div>
-      ${w.network !== CFG.primaryNetwork ? `<button class="btn btn-primary btn-block" style="margin-top:16px" data-action="switch-net" data-net="${CFG.primaryNetwork}">Switch to ${U.esc(Chain.get(CFG.primaryNetwork).name)}</button>` : ""}
+      ${w.network !== Chain.primaryId() ? `<button class="btn btn-primary btn-block" style="margin-top:16px" data-action="switch-net" data-net="${Chain.primaryId()}">Switch to ${U.esc(Chain.get(Chain.primaryId()).name)}</button>` : ""}
       <div style="display:flex;gap:8px;margin-top:18px">
         <button class="btn btn-ghost btn-sm" data-action="copy" data-text="${U.esc(w.address)}">Copy address</button>
         <a class="btn btn-ghost btn-sm" href="${Chain.explorerAddr(w.network, w.address)}" target="_blank" rel="noopener">Explorer</a>
@@ -522,7 +531,7 @@
   };
 
   V.voteModal = (a, s) => {
-    const w = Wallet.state, p = s?.usdPrice, primary = CFG.primaryNetwork;
+    const w = Wallet.state, p = s?.usdPrice, primary = Chain.primaryId();
     const hold = U.toUnits(w.balance), min = U.toUnits(s?.minHoldingToVote);
     const checks = [
       [w.connected, "Wallet connected"],

@@ -2,9 +2,9 @@
 
 Static frontend (HTML/CSS/vanilla JS, no build step) for the GRAFFY street-art voting seasons.
 
-- Network: **Robinhood Chain** only (Chain ID 4663).
-- Wallet login: EVM wallets (EIP-6963 / MetaMask, Rabby…), Robinhood Chain is added/switched automatically.
-- "Buy $GRAFFY" popup → Uniswap on Robinhood Chain.
+- Networks: single (any one of Robinhood / Solana / Base / BSC) or multi (always all 4).
+- Wallet login: EVM wallets (EIP-6963 / MetaMask, Rabby…, network added/switched automatically) and Solana wallets.
+- "Copy CA" buttons (header + hero) — no buy links.
 - X: [@GraffyCoin](https://x.com/GraffyCoin)
 
 ## Run
@@ -17,10 +17,13 @@ All settings live in [`js/config.js`](js/config.js):
 
 | Key | Purpose |
 |---|---|
-| `mode` | `"single"` = only `singleNetwork` (Robinhood) · `"multi"` = Robinhood + Solana + Base + BSC |
-| `token.sol` | $GRAFFY mint on Solana (multi mode). Voting/upload stay on `primaryNetwork` |
+| `mode` | `"single"` = only `singleNetwork` · `"multi"` = always all 4 networks |
+| `singleNetwork` | `robinhood` \| `solana` \| `base` \| `bsc` — shown network, main network and accent color in single mode |
+| `multiOrder` | Network order in multi mode |
+| `primaryNetwork` | Main network for voting/upload in multi mode |
 | `token.address` | $GRAFFY CA shared by all EVM networks (Robinhood, Base, BSC) |
-| `networks.robinhood.rpcUrls / explorer / uniswapChain` | Network settings |
+| `token.sol` | $GRAFFY mint on Solana |
+| `networks.<key>` | `name`, `short`, `color`, `tagline`, `icon`, `ca` (empty → `token.address` / `token.sol`), RPC, explorer |
 | `contracts.voting` | Season/voting contract (primary network) |
 | `api.baseUrl` | Backend base URL |
 | `adminWallets` | Wallets that see the Admin form (backend must re-verify) |
@@ -86,7 +89,7 @@ js/config.js   # editable settings
 js/utils.js    # formatting, BigInt-safe token math
 js/api.js      # backend client
 js/chain.js    # networks, Uniswap links, on-chain reads
-js/wallet.js   # wallet login (Robinhood Chain)
+js/wallet.js   # wallet login (EVM + Solana)
 js/views.js    # pages & modals
 js/app.js      # router & shell
 assets/
