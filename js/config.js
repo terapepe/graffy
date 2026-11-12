@@ -15,7 +15,7 @@ window.GRAFFY_CONFIG = {
   /** $GRAFFY CA: address = shared by all EVM networks (Robinhood, Base, BSC) · sol = Solana mint.
    *  A network can override with its own `ca` below. */
   token: {
-    address: "",
+    address: "0x4aa420b53f852a24b88b58041838261c110e3bd4",
     sol: "",
   },
 
