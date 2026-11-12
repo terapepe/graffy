@@ -15,8 +15,8 @@ window.GRAFFY_CONFIG = {
   /** $GRAFFY CA: address = shared by all EVM networks (Robinhood, Base, BSC) · sol = Solana mint.
    *  A network can override with its own `ca` below. */
   token: {
-    address: "0x6A0c0B9677E3B0ca90799BC2C2e9B957342f66eA",
-    sol: "EgaPcFAbf9crtZD1YwuFeGs1oN3M9dVGi3zr8NEV6ea",
+    address: "",
+    sol: "",
   },
 
   /** Smart contracts (fill in after deployment). */
@@ -30,7 +30,7 @@ window.GRAFFY_CONFIG = {
    *  "single" = only singleNetwork is shown (robinhood | solana | base | bsc) — it is also the main network
    *  "multi"  = always all 4 networks, ordered by multiOrder; voting/upload use primaryNetwork
    */
-  mode: "multi",
+  mode: "single",
   singleNetwork: "robinhood",
   multiOrder: ["solana", "robinhood", "base", "bsc"],
   primaryNetwork: "robinhood",
