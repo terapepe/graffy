@@ -1,7 +1,7 @@
 window.GRAFFY_CONFIG = {
   project: {
     name: "GRAFFY",
-    ticker: "$GRAFFY",
+    ticker: "$GRF",
     tagline: "Spray. Vote. Win.",
     totalSupply: "1000000000", // fixed total supply (display only)
     decimals: 18,              // fallback; real value read on-chain
@@ -13,7 +13,7 @@ window.GRAFFY_CONFIG = {
   },
 
   token: {
-    address: "",
+    address: "0x2147477ac9663183F16996C28e35A853116eb794",
     sol: "",
   },
 
