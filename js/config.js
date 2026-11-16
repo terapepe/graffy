@@ -8,28 +8,19 @@ window.GRAFFY_CONFIG = {
   },
 
   social: {
-    x: "https://x.com/GraffyCoin",
-    xHandle: "@GraffyCoin",
+    x: "https://x.com/GraffyLOL",
+    xHandle: "@GraffyLOL",
   },
 
-  /** $GRAFFY CA: address = shared by all EVM networks (Robinhood, Base, BSC) · sol = Solana mint.
-   *  A network can override with its own `ca` below. */
   token: {
     address: "",
     sol: "",
   },
 
-  /** Smart contracts (fill in after deployment). */
   contracts: {
-    // Season / voting contract on Robinhood Chain.
     voting: "",
   },
 
-  /**
-   * Site mode:
-   *  "single" = only singleNetwork is shown (robinhood | solana | base | bsc) — it is also the main network
-   *  "multi"  = always all 4 networks, ordered by multiOrder; voting/upload use primaryNetwork
-   */
   mode: "single",
   singleNetwork: "robinhood",
   multiOrder: ["solana", "robinhood", "base", "bsc"],
